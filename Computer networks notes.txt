@@ -1,0 +1,124 @@
+1.) Application Layer - The Application Layer is the top layer of the OSI model that provides network services directly to end-user applications. It enables applications such as web browsers, email clients, and file transfer programs to communicate over a network using protocols like HTTP, HTTPS, FTP, SMTP, and DNS. 
+
+2.) Presentation Layer - The Presentation Layer (Layer 6) is responsible for data translation, encryption/decryption, compression/decompression, and formatting. It ensures that data sent by one system can be correctly interpreted by the application on another system.
+
+3.) Session Layer - The Session Layer (Layer 5) is responsible for establishing, managing, synchronizing, and terminating communication sessions between applications. It ensures that data exchanges occur in an organized manner and can resume from checkpoints if interrupted.
+
+4.) Transport Layer - The Transport Layer (Layer 4) provides end-to-end communication between applications. It is responsible for segmentation, reassembly, flow control, error control, reliable delivery, and multiplexing using port numbers. Common protocols at this layer are TCP and UDP.
+
+5.) Network Layer - The Network Layer (Layer 3) is responsible for logical addressing, routing, packet forwarding, and path determination. It uses IP addresses to deliver packets between devices across different networks. Routers primarily operate at this layer.
+
+Transport knows which application should get the data (port number). Network knows which device should get the data (IP address).
+
+6.) Data Link Layer - The Data Link Layer (Layer 2) is responsible for framing, MAC addressing, error detection, and node-to-node delivery on the same network. It uses MAC addresses to ensure data reaches the correct device within a local network. Switches primarily operate at this layer.
+
+Transport Layer → Which application gets it? (Port)
+Network Layer → Which house gets it? (IP Address)
+Data Link Layer → Which room/door in the building? (MAC Address)
+
+7.) Physical Layer - The Physical Layer (Layer 1) is responsible for transmitting raw bits over a physical medium. It defines cables, connectors, electrical signals, wireless frequencies, and data transmission rates. Devices such as hubs and repeaters operate at this layer.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ipv4 and ipv6 
+
+IPv4 is a 32-bit addressing system using dotted-decimal notation, while IPv6 is a 128-bit addressing system created to overcome IPv4 address exhaustion. Public IP addresses are globally routable and reachable over the Internet, whereas private IP addresses are used inside local networks and are not directly routable on the Internet. The private IPv4 ranges are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Difference in ip and mac address 
+
+IP addresses are logical Layer 3 addresses used for routing packets between networks, while MAC addresses are physical Layer 2 addresses used for delivering frames within a local network. When a device knows only the destination IP, it uses ARP to resolve the corresponding MAC address. If the destination is on another network, the device sends the frame to its default gateway's MAC address, and routers forward the packet toward the destination using the IP address.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+When a user enters https://google.com, the browser first performs a DNS lookup to resolve the domain name to an IP address. It then establishes a TCP connection with the server using the three-way handshake. Since HTTPS is used, a TLS handshake occurs to authenticate the server and establish encryption keys. After the secure connection is established, the browser sends an HTTP request. The server processes the request and returns an HTTP response containing HTML and other resources. The browser then downloads additional assets such as CSS, JavaScript, and images and renders the page.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tcp deep dive - 
+
+TCP (Transmission Control Protocol) is a connection-oriented Transport Layer protocol that provides reliable, ordered, and error-checked communication between applications. It uses sequence numbers, acknowledgements, retransmissions, flow control, and congestion control to ensure data is delivered correctly and in order.
+
+Flow control protects the receiver using the receive window (rwnd), while congestion control protects the network using the congestion window (cwnd). The sender can transmit only up to min(rwnd, cwnd) bytes in flight.
+
+TCP connection establishment uses a 3-way handshake because the server can combine acknowledging the client's SYN and sending its own SYN into a single SYN-ACK packet. Connection termination usually requires 4 packets because TCP is full-duplex; when one side sends a FIN, it only closes its sending direction. The other side may still have data to transmit, so it acknowledges the FIN first and sends its own FIN later when it is ready to close its side of the connection.
+
+A SYN can be acknowledged and paired with another SYN immediately, but a FIN only means "I'm done sending," not "I'm done receiving," so each direction must be closed independently.
+
+Flow control is a TCP mechanism that prevents a fast sender from overwhelming a slow receiver. The receiver advertises its available buffer space using the receive window (rwnd), and the sender limits the amount of unacknowledged data in flight accordingly. TCP implements flow control using a sliding window mechanism, ensuring that the receiver's buffer does not overflow.
+
+TCP congestion control prevents network overload by regulating how much data a sender can inject into the network. It uses a congestion window (cwnd) that grows exponentially during Slow Start and linearly during Congestion Avoidance. Packet loss is treated as a sign of congestion. Upon detecting loss through duplicate ACKs, TCP performs Fast Retransmit and Fast Recovery, reducing the congestion window and continuing transmission. Severe loss detected through timeout causes TCP to reset the congestion window and restart Slow Start.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DNS resolves domain names to IP addresses. Routing determines the path packets take across multiple networks using IP addresses and routing tables. Switching forwards frames within a local network using MAC addresses and MAC address tables.
+
+DNS answers: "What's Google's IP?"
+Routing answers: "How do I reach that IP?"
+Switching answers: "Which local device/port should receive this frame next?"
+
+A      = Address (IPv4)
+
+AAAA   = Address (IPv6)
+
+CNAME  = Canonical Name (Alias)
+
+MX     = Mail Exchange
+
+During a DNS lookup, the browser first checks local caches such as the browser cache, operating system cache, and router cache. If no cached entry exists, a recursive DNS resolver is queried. The resolver performs iterative queries by contacting a Root DNS server, then the appropriate TLD server (such as .com), and finally the authoritative DNS server for the domain. The authoritative server returns the requested record, such as an A or AAAA record. The resolver caches the result according to its TTL and returns the IP address to the client, which can then establish a connection to the destination server.
+
+
+Cache
+ ↓
+Resolver
+ ↓
+Root
+ ↓
+TLD
+ ↓
+Authoritative
+ ↓
+IP Address
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A switch operates at Layer 2 and forwards frames using MAC addresses within a local network. A router operates at Layer 3 and forwards packets using IP addresses between different networks. Switches maintain MAC address tables, while routers maintain routing tables and determine the best path to a destination network.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+NAT (Network Address Translation) is a mechanism used by routers to translate private IP addresses into public IP addresses and vice versa. It allows multiple devices with private IP addresses to share a single public IP address when accessing the Internet. The router maintains a NAT table that maps internal IP addresses and ports to public IP addresses and ports, enabling responses to be routed back to the correct device.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+UDP (User Datagram Protocol) is a connectionless Transport Layer protocol that provides fast communication with minimal overhead. Unlike TCP, UDP does not guarantee delivery, ordering, retransmission, flow control, or congestion control. It is commonly used in applications where low latency is more important than perfect reliability, such as video streaming, online gaming, VoIP, and DNS.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DNS (Domain Name System) is a distributed naming system that translates human-readable domain names into IP addresses. When a user enters a domain name such as google.com, DNS resolves it to an IP address so the client can communicate with the destination server. DNS typically uses UDP port 53 and relies on a hierarchy of root servers, TLD servers, and authoritative name servers.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DHCP (Dynamic Host Configuration Protocol) is a protocol used to automatically assign IP addresses and other network settings such as subnet mask, default gateway, and DNS servers to devices on a network. DHCP operates using the DORA process: Discover, Offer, Request, and Acknowledge, and typically uses UDP ports 67 and 68.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A subnet mask is a 32-bit value used to divide an IP address into a network portion and a host portion. It helps devices determine whether a destination is on the same local network or on a different network that requires routing through a gateway. Common subnet masks include 255.255.255.0 (/24), 255.255.0.0 (/16), and 255.0.0.0 (/8).
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TCP uses a three-way handshake to establish a connection. First, the client sends a SYN packet with its initial sequence number. Second, the server responds with a SYN-ACK packet containing its own sequence number and an acknowledgement of the client's sequence number. Finally, the client sends an ACK packet acknowledging the server's sequence number. After these three steps, the connection is established and data transfer can begin.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+When a user enters an HTTPS URL, the browser first performs a DNS lookup to resolve the domain name to an IP address. If the destination is outside the local network, the client uses ARP to obtain the gateway's MAC address and sends traffic to the router. A TCP three-way handshake is then established with the server on port 443. Next, a TLS handshake occurs, during which the server presents its certificate and both sides establish encryption keys. The browser then sends an encrypted HTTP request. The server processes the request and returns an encrypted HTTP response. The browser decrypts the response, downloads additional resources such as CSS and JavaScript, and renders the webpage.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A hub is a Layer 1 device that broadcasts incoming data to all connected ports. A switch is a Layer 2 device that forwards frames based on MAC addresses and maintains a MAC address table. A router is a Layer 3 device that forwards packets between different networks using IP addresses and routing tables.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DNS (Domain Name System) translates domain names into IP addresses. When a user enters a domain such as google.com, the browser first checks local caches. If no cached record exists, it queries a recursive DNS resolver. The resolver performs iterative lookups by contacting Root DNS servers, TLD servers, and finally the authoritative DNS server for the domain. The authoritative server returns the requested record, such as an A or AAAA record. The resolver caches the result and returns the IP address to the client, which can then establish a connection to the destination server.
