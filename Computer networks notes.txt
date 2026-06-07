@@ -122,3 +122,23 @@ A hub is a Layer 1 device that broadcasts incoming data to all connected ports. 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 DNS (Domain Name System) translates domain names into IP addresses. When a user enters a domain such as google.com, the browser first checks local caches. If no cached record exists, it queries a recursive DNS resolver. The resolver performs iterative lookups by contacting Root DNS servers, TLD servers, and finally the authoritative DNS server for the domain. The authoritative server returns the requested record, such as an A or AAAA record. The resolver caches the result and returns the IP address to the client, which can then establish a connection to the destination server.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ARP (Address Resolution Protocol) is used to resolve an IPv4 address to a MAC address on a local network. When a device knows the destination IP but not the destination MAC, it broadcasts an ARP request. The device owning that IP responds with its MAC address, which is then cached for future communication.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TCP ensures reliability through sequence numbers, acknowledgements, retransmissions, checksums, ordered delivery, sliding windows, and flow control. Each byte is assigned a sequence number, receivers acknowledge received data, lost segments are retransmitted, corrupted segments are detected using checksums, and data is delivered to applications in the correct order.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TCP congestion control prevents network overload by controlling the amount of data a sender can inject into the network. It uses a congestion window (cwnd) that grows exponentially during Slow Start and linearly during Congestion Avoidance. Packet loss is treated as a sign of congestion. Upon detecting loss through duplicate ACKs, TCP performs Fast Retransmit and Fast Recovery, reducing the congestion window. If a retransmission timeout occurs, TCP assumes severe congestion and restarts with Slow Start.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+HTTP/1.1 uses TCP and typically relies on multiple connections with limited request pipelining. HTTP/2 improves performance by introducing multiplexing, binary framing, and header compression while still using TCP. HTTP/3 uses QUIC over UDP, eliminating TCP head-of-line blocking, reducing connection setup latency, and improving performance on unreliable networks.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+HTTP/3 uses UDP because it runs on QUIC, which implements reliability, congestion control, flow control, and encryption in user space. TCP causes head-of-line blocking because all streams share the same ordered byte stream. QUIC uses independent streams, so packet loss in one stream does not block others. Using UDP also allows QUIC to evolve without requiring operating system changes.
