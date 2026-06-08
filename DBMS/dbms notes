@@ -1,0 +1,386 @@
+A DBMS is software that manages databases and provides features such as data storage, retrieval, security, concurrency control, backup and recovery. It acts as an intermediary between users/applications and the database, ensuring data is organized, consistent, and efficiently accessible.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Why not store data in files?
+
+Data can be stored in files, but file systems suffer from redundancy, inconsistency, poor security, lack of concurrency control, and no transaction management. DBMS overcomes these limitations by providing structured storage, efficient querying, security, transactions, and recovery mechanisms.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Main keys - 
+
+1. A Primary Key is a column or set of columns that uniquely identifies each record in a table and cannot contain NULL values.
+	
+2. A Foreign Key is a column that references the Primary Key of another table and maintains referential integrity.
+
+3. A Candidate Key is any column that can uniquely identify a row.
+
+4. A Super Key is any set of columns that can uniquely identify a row.
+
+5. A Composite Key consists of two or more columns together that uniquely identify a row.
+
+6. Candidate Keys that are not chosen as the Primary Key are called Alternate Keys.
+
+Keys(done) → Normalization(done) → Indexes(done) → ACID(done) → Transactions → Isolation Levels.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Relationships - 
+
+Relationships define how data in one table is associated with data in another table.
+
+1. One-to-One (1:1) : One record in Table A is associated with exactly one record in Table B.
+
+2. One-to-Many (1:N) : One record in Table A can be associated with multiple records in Table B.
+
+3. Many-to-Many (M:N) : Many records in Table A can be associated with many records in Table B.
+
+How do you implement Many-to-Many?
+We create a junction (bridge) table containing the primary keys of both tables as foreign keys. These foreign keys often form a composite primary key.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Normalization - 
+
+Normalization is the process of structuring database tables to minimize redundancy and dependency by dividing large tables into smaller related tables.
+
+First Normal Form (1NF)
+Rule:
+Each column must contain atomic (single) values.
+No repeating groups.
+
+Second Normal Form (2NF)
+Rule:
+Must already be in 1NF.
+Remove partial dependency.
+
+What is Partial Dependency?
+
+When a non-key attribute depends on only part of a composite key.
+
+2NF removes partial dependencies by ensuring every non-key attribute depends on the whole primary key.
+
+Third Normal Form (3NF)
+Rule:
+Must already be in 2NF.
+Remove transitive dependency.
+
+3NF removes transitive dependencies by ensuring non-key attributes depend only on the primary key.
+
+BCNF (Boyce-Codd Normal Form)
+
+A stricter version of 3NF.
+Rule:
+Every determinant must be a candidate key.
+
+
+Normalization is the process of organizing data in a database to reduce redundancy and avoid anomalies. It improves consistency by decomposing large tables into smaller related tables. The most common normal forms are 1NF, which removes repeating groups, 2NF, which removes partial dependencies, and 3NF, which removes transitive dependencies.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ACID Properties - 
+
+A transaction is a sequence of operations treated as a single unit of work.
+
+A = Atomicity
+"All or Nothing"
+
+Atomicity ensures that either all operations in a transaction are executed or none are.
+
+C = Consistency
+
+Consistency ensures that a transaction preserves all database rules, constraints, and integrity requirements.
+
+I = Isolation
+
+Isolation ensures that concurrent transactions do not affect each other's execution.
+
+D = Durability
+
+Durability guarantees that committed transactions are permanently stored and cannot be lost.
+
+ACID properties are Atomicity, Consistency, Isolation, and Durability. They ensure transactions execute reliably, maintain data integrity, handle concurrent access safely, and preserve committed data even after failures.
+
+After ACID, interviewers almost always move to Isolation Levels: Read Uncommitted, Read Committed, Repeatable Read, Serializable
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Indexes - 
+An index is a data structure that improves the speed of data retrieval operations on a table.
+
+Types of Indexes
+
+1. Primary Index (Clustered Index)
+
+Created automatically on the Primary Key in many databases.
+
+2. Secondary Index (Non-Clustered Index)
+
+Created on non-primary-key columns.
+
+3. Composite Index
+
+Index on multiple columns.
+
+Advantages of Indexes - Faster SELECT Queries , Faster Sorting, Faster Joins
+Disadvantages of Indexes - Extra Storage, Slower INSERT, Slower UPDATE, Slower DELETE
+
+When Should You Create an Index?
+
+Good candidates:
+
+Frequently searched columns
+Primary keys
+Foreign keys
+Columns used in JOIN
+Columns used in WHERE clauses
+Columns used in ORDER BY
+
+
+When Should You Avoid Indexes?
+
+Bad candidates:
+
+Small tables
+Columns rarely queried
+Columns with frequent updates
+Columns with very few unique values (sometimes)
+
+An index is a database data structure that improves query performance by allowing faster data retrieval. Most databases implement indexes using B-Trees. Indexes speed up SELECT, JOIN, and ORDER BY operations but increase storage usage and can slow INSERT, UPDATE, and DELETE operations because the index must also be maintained.
+
+Indexes(done) → Clustered vs Non-Clustered → Transactions → Isolation Levels → Deadlocks
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Transactions - 
+A transaction is a sequence of one or more database operations that are executed as a single unit of work.
+
+A transaction must either:
+
+Complete successfully (COMMIT)
+Fail completely (ROLLBACK)
+
+Transaction States - 
+1. Active
+
+Transaction is executing.
+
+2. Partially Committed
+
+All statements executed successfully.
+
+Waiting for commit.
+
+3. Committed
+
+Changes permanently saved.
+
+4. Failed
+
+An error occurred.
+
+Examples:
+
+Constraint violation
+System crash
+Deadlock
+
+5. Aborted
+
+Database rolls back all changes.
+
+COMMIT
+
+Makes changes permanent.
+
+ROLLBACK
+
+Undoes all changes since transaction start.
+
+A transaction is a sequence of database operations treated as a single logical unit of work. It ensures that either all operations are completed successfully and committed, or all changes are rolled back in case of failure. Transactions follow ACID properties to maintain data integrity and consistency.
+
+isolation levels and deadlock
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Locks - 
+A lock is a concurrency control mechanism that restricts access to a database resource while a transaction is using it.
+
+Types of Locks - 
+
+1. Shared Lock (S Lock)
+
+Also called Read Lock.
+
+Multiple transactions can read simultaneously.
+No transaction can modify the locked data.
+
+2. Exclusive Lock (X Lock)
+
+Also called Write Lock.
+
+Transaction can read and modify data.
+No other transaction can read or write the locked resource.
+
+Row-Level Lock
+
+Lock only specific rows.
+
+Locks are concurrency control mechanisms used to ensure data consistency when multiple transactions access the same data simultaneously. The two main types are Shared Locks, which allow multiple reads, and Exclusive Locks, which allow a single transaction to modify data while blocking others. Locks help maintain isolation and prevent issues such as lost updates and dirty reads.
+
+Isolation levels.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Concurrency problems - 
+Concurrency problems occur when multiple transactions access and modify the same data simultaneously, leading to inconsistent or incorrect results.
+
+1. Dirty Read
+
+A dirty read occurs when a transaction reads uncommitted data from another transaction.
+
+2. Non-Repeatable Read
+
+A non-repeatable read occurs when a transaction reads the same row multiple times and gets different values because another transaction modified and committed the row.
+
+3. Phantom Read
+
+A phantom read occurs when a transaction re-executes a query and finds rows that were inserted or deleted by another committed transaction.
+
+4. Lost Update
+
+A lost update occurs when concurrent transactions overwrite each other's changes.
+
+5. Dirty Write
+
+One transaction overwrites another transaction's uncommitted data.
+
+Concurrency problems occur when multiple transactions access the same data simultaneously. Common issues include Dirty Reads, where uncommitted data is read; Non-Repeatable Reads, where the same row returns different values; Phantom Reads, where query results contain new or deleted rows; and Lost Updates, where one transaction overwrites another transaction's changes. These problems are controlled using locks and isolation levels.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Isolation levels - 
+Isolation Levels define how much one transaction is isolated from other concurrent transactions.
+
+1. Read Uncommitted
+
+The lowest isolation level.
+
+Transactions can read uncommitted data from other transactions.
+
+Allows Dirty Read, Non-Repeatable Read, Phantom Read
+
+2. Read Committed
+
+Most commonly used isolation level in many databases.
+
+A transaction can only read committed data.
+
+Prevents Dirty Read
+Allows Non-Repeatable Read, Phantom Read
+
+3. Repeatable Read
+
+Ensures that rows read during a transaction cannot change until the transaction completes.
+Prevents Dirty Read, Non-Repeatable Read
+
+Allows Phantom Read (theoretical SQL standard answer)
+
+4. Serializable
+
+Highest isolation level.
+
+Transactions execute as if they run one after another.
+
+Prevents Dirty Read, Non-Repeatable Read, Phantom Read
+
+Isolation levels define how transactions interact with each other when running concurrently. The four standard isolation levels are Read Uncommitted, Read Committed, Repeatable Read, and Serializable. As the isolation level increases, data consistency improves and concurrency problems are reduced, but performance and concurrency generally decrease.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Joins - 
+A JOIN is used to combine rows from two or more tables based on a related column.	
+
+1. INNER JOIN
+
+Returns only matching records from both tables.
+
+2. LEFT JOIN (LEFT OUTER JOIN)
+
+Returns:
+
+All rows from the left table
+Matching rows from the right table
+
+3. RIGHT JOIN (RIGHT OUTER JOIN)
+
+Returns:
+
+All rows from the right table
+Matching rows from the left table
+
+4. FULL OUTER JOIN
+
+Returns:
+
+All rows from both tables
+Matching rows where possible
+NULL where no match exists
+
+
+5. CROSS JOIN
+
+Produces the Cartesian Product.
+
+Every row of table A combines with every row of table B.
+
+6. SELF JOIN
+
+A table joined with itself.
+
+Joins are used to combine data from multiple tables based on a related column. Common types include INNER JOIN, which returns matching rows; LEFT JOIN, which returns all rows from the left table and matching rows from the right table; RIGHT JOIN, which returns all rows from the right table; FULL OUTER JOIN, which returns all rows from both tables; CROSS JOIN, which creates a Cartesian product; and SELF JOIN, where a table is joined with itself.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DBMS VS RDBMS  - 
+
+DBMS is software used to manage databases, whereas RDBMS is a type of DBMS that stores data in relational tables and maintains relationships using primary and foreign keys while supporting ACID properties and normalization.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Primary Key VS Unique Key - 
+
+Primary Key
+
+A Primary Key uniquely identifies each row in a table.
+
+Properties
+Must be unique
+Cannot be NULL
+Only one Primary Key per table
+Automatically creates an index
+
+Unique Key
+
+A Unique Key also ensures that values are unique.
+
+Properties
+Must be unique
+NULL values are allowed (database-dependent)
+Multiple Unique Keys can exist in a table
+Creates an index
+
+Both Primary Key and Unique Key enforce uniqueness. The main difference is that a table can have only one Primary Key and it cannot contain NULL values, whereas a table can have multiple Unique Keys and they generally allow NULL values. A Primary Key is used as the main identifier for records, while Unique Keys enforce uniqueness on other columns such as email or phone number.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Super key vs candidate key
+
+A Super Key is any set of attributes that uniquely identifies a row, whereas a Candidate Key is a minimal Super Key with no redundant attributes. Every Candidate Key is a Super Key, but not every Super Key is a Candidate Key.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Denormalization?
+
+Denormalization is the process of adding redundant data or combining tables in a normalized database to improve query performance.
