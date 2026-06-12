@@ -1,0 +1,291 @@
+What is a process?
+	A process is an instance of a program in execution. It contains the program code along with its current state, memory, CPU registers, program counter, and allocated system resources. The operating system manages processes to enable multitasking and resource sharing.
+	
+What is PCB (Process Control Block)?
+	The OS stores process information in a PCB.
+
+	It contains:
+
+		Process ID (PID)
+		Process state
+		Program Counter
+		CPU registers
+		Scheduling information
+		Memory information
+		Open files
+
+	Without PCB, the OS would have no idea what the process was doing before it got interrupted.
+
+Process States
+
+	Common process states:
+		New
+		 ↓
+		Ready
+		 ↓
+		Running
+		 ↓
+		Waiting
+		 ↓
+		Ready
+		 ↓
+		Running
+		 ↓
+		Terminated
+		
+Can multiple processes share the same code?
+
+	Yes. Multiple processes can share the same read-only code segment while maintaining separate memory spaces for data, stack, and heap.
+	
+A process is an instance of a program that is currently executing. It includes the program code, its execution state, memory segments such as stack and heap, CPU registers, and other resources allocated by the operating system. The OS tracks and manages processes using a Process Control Block (PCB), allowing multiple processes to execute concurrently through scheduling.
+
+learning - Process vs Thread (done), PCB, Process States (done), Context Switching
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What are Process States?
+A process state represents the current status of a process during its lifecycle. Since the CPU can execute only a limited number of processes at a time, the operating system moves processes between different states.
+
+        +------+
+        | New  |
+        +------+
+            |
+            v
+        +-------+
+        | Ready |
+        +-------+
+            |
+            v
+        +---------+
+        | Running |
+        +---------+
+         /       \
+        /         \
+       v           v
+ +---------+   +------------+
+ | Waiting |   | Terminated |
+ +---------+   +------------+
+       |
+       v
+    Ready
+    
+1. New State
+	The process has just been created.
+2. Ready State
+	The process is ready to run but is waiting for CPU allocation.
+3. Running State
+	The CPU is currently executing the process instructions.
+4. Waiting (Blocked) State
+	The process cannot continue until some event occurs.
+5. Terminated State
+	The process has finished execution.
+	
+A process state indicates the current status of a process in its lifecycle. The main states are New, Ready, Running, Waiting (Blocked), and Terminated. A process starts in the New state, moves to Ready when it's prepared to execute, enters Running when assigned the CPU, goes to Waiting if it needs an I/O operation or some event, returns to Ready once the event completes, and finally moves to Terminated after execution finishes. The operating system manages these state transitions through scheduling and resource management.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+what is a Thread?
+	A thread is the smallest unit of CPU execution. It exists within a process and shares the process's memory and resources with other threads of the same process.
+	
+Thread memory structure - 
+	Process
+	│
+	├── Code (Shared)
+	├── Heap (Shared)
+	├── Global Data (Shared)
+	│
+	├── Thread 1 Stack
+	├── Thread 2 Stack
+	└── Thread 3 Stack
+	
+Advantages of Threads
+1. Better Responsiveness
+	UI remains active while background work happens.
+	
+2. Resource Sharing
+	Threads share memory directly.
+
+3. Faster Creation
+	Creating a thread is cheaper than creating a process.
+
+4. Better CPU Utilization
+	Multiple CPU cores can execute different threads simultaneously.
+
+
+What happens if one thread crashes?
+	Usually the entire process may crash because all threads share the same address space.
+	
+A thread is the smallest unit of execution managed by the operating system. Multiple threads can exist within a single process and share the process's memory, code, and resources while maintaining their own stack, registers, and program counter. Threads improve responsiveness, resource sharing, and CPU utilization, making them lighter and more efficient than processes.
+
+Learning - Process vs Thread (done) , Context Switching, Multithreading, Race Condition, Mutex and Semaphore, Deadlock.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+process vs thread
+
+A process is an independent program in execution with its own memory space and resources, while a thread is the smallest unit of execution within a process. Multiple threads can exist inside a process and share the process's memory and resources. Processes are heavier and more isolated, whereas threads are lightweight and communicate more efficiently.
+
+Why are threads called lightweight processes?
+
+	Because threads:
+
+	Share memory/resources.
+	Require less memory.
+	Are faster to create.
+	Have cheaper context switching.
+	
+A process is an independent program in execution with its own address space, memory, and resources. A thread is the smallest unit of execution within a process. Multiple threads inside a process share the same code, data, and heap memory while maintaining separate stacks and registers. Processes provide better isolation but have higher overhead, whereas threads are lightweight, faster to create, and allow efficient communication through shared memory.
+
+Threads share memory. Is that always good?
+	No. Shared memory makes communication faster, but it can lead to race conditions, data inconsistency, and synchronization issues. Therefore, mechanisms like mutexes, semaphores, and locks are required.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+User Threads vs Kernel Threads
+
+What are User Threads?
+	User threads are created and managed in user space.
+	The OS doesn't know they exist.
+	
+Advantages of User Threads
+	1. Fast Creation
+		No system call required.
+	2. Fast Context Switching
+		Switching happens in user space.
+	3. Lower Overhead
+		Kernel involvement is minimal.
+Disadvantages of User Threads
+	Blocking Problem
+
+	Suppose:
+		Thread 1 -> File Read
+		Thread 2 -> Calculation
+		Thread 3 -> UI
+
+	If Thread 1 performs a blocking system call:
+		read(file)
+
+	The kernel sees only one execution entity.
+
+	Result:
+		Entire Process Blocked
+
+	Even Thread 2 and Thread 3 stop.
+	This is the biggest drawback.
+		
+What are Kernel Threads?
+	Kernel threads are managed directly by the operating system.
+	Each thread is individually scheduled.
+	
+Advantages of Kernel Threads
+	1. True Parallelism
+
+		On a 4-core CPU:
+
+		Core 1 -> Thread 1
+		Core 2 -> Thread 2
+		Core 3 -> Thread 3
+		Core 4 -> Thread 4
+
+		Threads can run simultaneously.
+	2. Better Blocking Behavior
+		If:
+		Thread 1 -> Waiting for disk
+		Only Thread 1 blocks.
+
+		Thread 2 -> Continues
+		Thread 3 -> Continues
+	3. Kernel Scheduling
+		The OS can make smarter scheduling decisions.
+		
+Disadvantages of Kernel Threads
+	Higher Overhead
+		Creating a thread requires kernel involvement.
+
+	More Expensive Context Switching
+		Switching requires mode transitions.
+
+		User Mode
+		↓
+		Kernel Mode
+		↓
+		User Mode
+
+	More work for the OS.
+	
+User threads are managed by a thread library in user space and are not visible to the operating system kernel. They are lightweight and have low context-switching overhead, but a blocking system call can block the entire process. Kernel threads are managed by the OS kernel, allowing true parallelism and better handling of blocking operations, although they involve higher creation and switching overhead. Modern operating systems generally use kernel threads with a one-to-one threading model.
+
+Learning - Context Switching, Race Condition, Mutex, Semaphore, Deadlock.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Context Switching -
+	Context Switching is the process of saving the state (context) of a currently running process or thread and loading the state of another process or thread so that CPU execution can switch between them.
+	
+What is "Context"?
+	The context is all the information needed to resume execution later.
+	
+It includes:
+
+	Program Counter (PC)
+	CPU Registers
+	Stack Pointer
+	Process State
+	Scheduling Information
+	
+Process A Running
+        |
+        v
+ Save Context
+        |
+        v
+ Scheduler Selects B
+        |
+        v
+ Load Context
+        |
+        v
+ Process B Running
+ 
+ Process Context Switch - 
+ 	OS must switch:
+		Registers
+		Program Counter
+		Memory Mapping	
+		Address Space
+Thread Context Switch - 
+	OS switches:
+		Registers
+		Program Counter
+		Stack
+	Memory remains shared
+
+Is Context Switching Free?
+	No.
+
+Every switch consumes CPU time.
+
+During switching:
+	Saving State
+	Loading State
+	Scheduling
+
+No useful application work is done.
+
+This overhead is called:
+	Context Switching Overhead
+	
+What triggers a Context Switch?
+	Time quantum expires
+	I/O operation request
+	Process blocks
+	Higher-priority process arrives
+	Interrupt occurs
+	
+Does a Context Switch always involve a mode switch?
+	Not necessarily.
+
+	A context switch often requires kernel involvement.
+	A mode switch is a transition between User Mode and Kernel Mode.
+	
+Context Switching is the mechanism by which the operating system saves the execution state of the currently running process or thread and restores the state of another process or thread, allowing the CPU to switch execution between them. The saved state includes information such as CPU registers, program counter, and stack pointer. Context switching enables multitasking but introduces overhead because the CPU spends time saving and restoring states instead of executing application code.
