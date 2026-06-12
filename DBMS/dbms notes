@@ -384,3 +384,212 @@ A Super Key is any set of attributes that uniquely identifies a row, whereas a C
 What is Denormalization?
 
 Denormalization is the process of adding redundant data or combining tables in a normalized database to improve query performance.
+
+Advantages of Denormalization - 
+1. Faster Reads
+2. Better Reporting Performance
+3. Better for Analytics
+
+Disadvantages of Denormalization
+1. Data Redundancy
+2. Increased Storage
+3. Update Anomalies
+4. More Complex Maintenance
+
+Denormalization is the process of intentionally introducing redundancy into a database to improve read performance. It reduces the need for joins by storing related data together, making queries faster. However, it increases storage requirements and can lead to data inconsistency if updates are not handled carefully.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+delete vs drop vs truncate
+
+DELETE removes selected rows and supports a WHERE clause. TRUNCATE removes all rows from a table but keeps the table structure and is generally faster than DELETE. DROP removes the entire table including its structure, data, indexes, and constraints. DELETE is a DML command, whereas TRUNCATE and DROP are DDL commands.\
+
+What is the difference between DDL, DML, DCL, and TCL?
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. DDL (Data Definition Language)
+
+	DDL is used to define or modify the database structure.
+
+	Operations - Create table, Alter table, Drop table, Truncate table.
+
+2. DML (Data Manipulation Language)
+
+	DML is used to manipulate data inside tables.
+
+	Operations INSERT, UPDATE, DELETE
+
+3. DCL (Data Control Language)
+
+	DCL is used to control access and permissions.
+
+	Operations GRANT, REVOKE
+	DCL commands are used to manage user permissions and access rights on database objects.
+
+4. TCL (Transaction Control Language)
+
+	TCL is used to manage transactions.
+
+Operations COMMIT, ROLLBACK, SAVEPOINT
+TCL commands are used to control transactions and maintain data consistency.
+
+SQL commands are categorized into DDL, DML, DCL, and TCL. DDL commands define database structures and include CREATE, ALTER, DROP, and TRUNCATE. DML commands manipulate data and include INSERT, UPDATE, and DELETE. DCL commands manage permissions using GRANT and REVOKE. TCL commands control transactions using COMMIT, ROLLBACK, and SAVEPOINT.
+
+next - groupby / having, window functions, views, stored procedures , triggers.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Group By VS having
+
+	GROUP BY is used to group rows that have the same values in specified columns.
+
+	HAVING is used to filter groups after grouping has been performed.
+
+GROUP BY is used to group rows based on one or more columns, whereas HAVING is used to filter those groups after aggregation has been performed.
+
+GROUP BY groups rows that have the same values into summary rows, while HAVING filters those groups after aggregation. WHERE filters individual rows before grouping, whereas HAVING filters aggregated results after GROUP BY. For example, HAVING COUNT(*) > 5 can filter groups based on aggregate values, which cannot be done using WHERE.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Window functions
+	A window function performs a calculation across a set of rows related to the current row without collapsing the rows into a single result.
+
+OVER() Clause
+
+Every window function uses:
+
+	PARTITION BY
+
+		Works like GROUP BY, but does not collapse rows.
+
+	1. ROW_NUMBER()
+
+		Assigns a unique sequential number.
+
+	2. RANK() -> 1 1 3
+
+		Provides ranking.
+
+		Ties get same rank.
+
+		Next rank is skipped.
+
+	3. DENSE_RANK() -> 1 1 2
+
+		Same as RANK but no gaps.
+
+	4. SUM() -> 1000 2000 4000
+
+		Running totals.
+
+	5. AVG()
+
+		Department average salary.
+
+	6. LAG()
+
+		Access previous row.
+
+	Use Case
+
+		Compare current value with previous value.
+
+	7. LEAD()
+
+		Access next row.
+
+Window functions perform calculations across a set of rows related to the current row while preserving individual rows in the result. They use the OVER() clause and are commonly used for ranking, running totals, moving averages, and comparing rows. Examples include ROW_NUMBER(), RANK(), DENSE_RANK(), LAG(), LEAD(), SUM(), and AVG().
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is a View?
+
+	A View is a virtual table based on the result of a SQL query.
+
+	A view does not store data itself (in most databases). It stores only the query definition.
+
+	A view is a virtual table created from the result of a SQL query. It presents data from one or more tables without storing the data separately.
+
+Why Use Views?
+	1. Security
+		Suppose HR should see employee names but not salaries.
+		Instead of giving access to the entire table:
+
+	2. Simplify Complex Queries
+
+	3. Logical Data Independence
+
+		Applications use the view instead of directly accessing tables.
+
+		Underlying tables can change while keeping the same view.
+
+A view is a virtual table created from the result of a SQL query. It does not usually store data itself but provides a customized representation of data from one or more tables. Views are commonly used for security, simplifying complex queries, and providing logical abstraction. Views can be simple or complex, and materialized views are a special type that store query results physically for faster access.
+
+What is the difference between a View and a Stored Procedure?
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stored Procedure - 
+
+A Stored Procedure is a precompiled collection of SQL statements stored in the database and executed as a single unit.
+A Stored Procedure is a named set of SQL statements stored in the database that can be executed repeatedly to perform a specific task.
+
+Advantages of Stored Procedures
+1. Better Performance
+
+	Stored procedures are typically compiled and optimized by the database.
+	Less parsing and planning overhead.
+	
+2. Code Reusability
+
+	Logic is written once.
+	Used by multiple applications.
+	
+3. Better Security
+
+	Users can be granted permission to execute the procedure without direct access to underlying tables.
+	
+4. Transaction Management
+
+	Complex operations can be wrapped inside a transaction.
+	
+A Stored Procedure is a precompiled collection of SQL statements stored in the database and executed as a single unit. It improves performance, reduces network traffic, promotes code reuse, and can encapsulate complex business logic and transaction management. Stored procedures can accept input parameters, return output values, and perform operations such as INSERT, UPDATE, DELETE, and SELECT.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Trigger - 
+
+A Trigger is a special database object that automatically executes when a specific event occurs on a table or view.
+A Trigger is a stored program that automatically executes in response to database events such as INSERT, UPDATE, or DELETE.
+
+Why Do We Need Triggers?
+
+	Common uses:
+
+		Audit logging
+		Maintaining history tables
+		Validation
+		Automatic calculations
+		Notifications
+		Data synchronization
+		
+Types of Triggers
+	1. BEFORE Trigger
+		Runs before the operation.
+	2. AFTER Trigger
+		Runs after the operation succeeds.
+	Based on Events
+		INSERT Trigger, UPDATE Trigger, DELETE Trigger
+		
+Advantages of Triggers
+	Automatic Execution
+		No need for application code.
+	Data Integrity
+		Can enforce business rules.
+	Auditing
+		Track who changed what.
+	Centralized Logic
+		Rules live in database.
+		
+A Trigger is a database object that automatically executes when a specified event such as INSERT, UPDATE, or DELETE occurs on a table or view. Triggers are commonly used for auditing, validation, maintaining history tables, and enforcing business rules. Unlike stored procedures, triggers execute automatically without being explicitly called.
