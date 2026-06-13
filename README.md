@@ -1,2 +1,2 @@
-# Computer-Networks
-Short notes for computer networks
+# Get Placement ready
+Short notes for everything
