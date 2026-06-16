@@ -159,7 +159,7 @@ What happens if one thread crashes?
 	
 A thread is the smallest unit of execution managed by the operating system. Multiple threads can exist within a single process and share the process's memory, code, and resources while maintaining their own stack, registers, and program counter. Threads improve responsiveness, resource sharing, and CPU utilization, making them lighter and more efficient than processes.
 
-Learning - Process vs Thread (done) , Context Switching (done) , Multithreading (done) , Race Condition, Mutex and Semaphore, Deadlock.
+Learning - Process vs Thread (done) , Context Switching (done) , Multithreading (done) , Race Condition(done) , Mutex and Semaphore, Deadlock.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -257,7 +257,7 @@ Disadvantages of Kernel Threads
 	
 User threads are managed by a thread library in user space and are not visible to the operating system kernel. They are lightweight and have low context-switching overhead, but a blocking system call can block the entire process. Kernel threads are managed by the OS kernel, allowing true parallelism and better handling of blocking operations, although they involve higher creation and switching overhead. Modern operating systems generally use kernel threads with a one-to-one threading model.
 
-Learning - Context Switching (done) , Race Condition, Mutex, Semaphore, Deadlock.
+Learning - Context Switching (done) , Race Condition (done) , Mutex, Semaphore, Deadlock.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -364,7 +364,7 @@ Is Multithreading Always Good?
 		
 Multithreading is the execution of multiple threads within the same process. Since threads share the process's memory and resources, they are lightweight and efficient. Multithreading improves responsiveness, CPU utilization, throughput, and resource sharing. Common real-world examples include web browsers, video streaming applications, web servers, online games, and IDEs, where different threads handle separate tasks concurrently.
 
-Learning - Race Condition, Critical Section, Mutex, Semaphore, Deadlock
+Learning - Race Condition (done) , Critical Section, Mutex, Semaphore, Deadlock
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -494,3 +494,50 @@ Types of Scheduling Algorithm
 			Gradually increase the priority of waiting processes over time.
 			
 	Priority Scheduling is a CPU scheduling algorithm where each process is assigned a priority, and the CPU is allocated to the highest-priority process. It can be implemented in both preemptive and non-preemptive forms. Its main advantage is that important processes are executed first, making it suitable for real-time and critical systems. However, it may lead to starvation of low-priority processes, which can be mitigated using aging.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Waiting time - 
+	Waiting Time is the total time a process spends waiting in the Ready Queue before getting CPU execution.
+
+Waiting Time is the total amount of time a process spends in the ready queue waiting for CPU allocation. It does not include the actual execution time of the process. For non-preemptive scheduling, it can be calculated as Start Time minus Arrival Time. It can also be calculated as Turnaround Time minus Burst Time.
+
+Turnaround time - 
+	Turnaround Time (TAT) is the total time taken by a process from its arrival in the system until its completion.
+	
+Turnaround Time is the total time taken by a process from arrival to completion. It is calculated as Completion Time minus Arrival Time. Turnaround Time includes both the waiting time and the actual execution time of the process. A commonly used formula is: Turnaround Time = Waiting Time + Burst Time.
+
+Response time - 
+	Response Time is the time between a process arriving in the system and getting the CPU for the first time.
+	
+Response Time is the time between a process's arrival and the first time it gets CPU execution. It is calculated as First CPU Start Time minus Arrival Time. Response Time is an important metric in interactive systems because it measures how quickly the system begins responding to a user's request, regardless of when the process eventually completes.
+
+What is Starvation - 
+	Starvation is a condition in which a process waits indefinitely because the scheduler continuously allocates resources to other processes.
+What is Aging?
+	Gradually increase the priority of a process the longer it waits.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Race Condition - 
+	A Race Condition occurs when multiple threads or processes access and modify shared data simultaneously, and the final result depends on the order in which they execute.
+
+A race condition happens when multiple threads "race" to access shared data, causing unpredictable or incorrect results.
+
+Critical Section
+	The code that accesses shared resources is called the Critical Section.
+	
+How to Prevent Race Conditions?
+	Use synchronization mechanisms - Mutex/Lock, semaphore, Atomic Operations
+	
+
+A race condition occurs when multiple threads or processes access and modify shared data concurrently, and the final outcome depends on the order of execution. It happens because operations that appear simple, such as incrementing a variable, are actually composed of multiple steps. Race conditions can lead to inconsistent or incorrect results and are typically prevented using synchronization mechanisms such as mutexes, locks, semaphores, or atomic operations.
+
+Race Condition = Multiple Threads + Shared Resource + No Synchronization.
+
+Learning - Critical Section, Mutex, Semaphore, Deadlock.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Critical Section?
+	A Critical Section is the part of a program where shared resources (shared variables, files, databases, etc.) are accessed or modified.
