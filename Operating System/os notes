@@ -541,3 +541,112 @@ Learning - Critical Section, Mutex, Semaphore, Deadlock.
 
 What is Critical Section?
 	A Critical Section is the part of a program where shared resources (shared variables, files, databases, etc.) are accessed or modified.
+	
+The Critical Section Problem is:
+	How can we ensure that when one thread is executing its critical section, no other thread enters its critical section involving the same shared resource?
+
+Requirements of a Good Critical Section Solution
+	There are 3 requirements.
+	1. Mutual Exclusion
+		If one thread is inside the critical section:
+			Thread 1 → Inside
+		then:
+			Thread 2 → Must Wait
+		Only one thread at a time.
+	2. Progress
+		If no thread is inside the critical section:
+			Critical Section Empty
+		then a waiting thread should be allowed to enter.
+		The system shouldn't wait forever.
+	3. Bounded Waiting
+		Every thread should get a chance eventually.
+			T1 Waiting
+			T2 Waiting
+			T3 Waiting
+		No thread should wait forever.
+		This prevents starvation.
+		
+A critical section is a portion of a program that accesses shared resources such as variables, files, or data structures. Since multiple threads may access the same resource concurrently, the critical section must be protected using synchronization mechanisms like mutexes, semaphores, or locks to prevent race conditions. A correct critical section solution should satisfy mutual exclusion, progress, and bounded waiting.
+
+What are the 3 requirements of the Critical Section Problem?
+	Answer:
+		Mutual Exclusion → Only one thread can enter at a time.
+		Progress → If no one is inside, a waiting thread should be allowed to enter.
+		Bounded Waiting → No thread should wait forever.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Mutex?
+	Mutex stands for:
+		Mutual Exclusion
+	A mutex is a synchronization mechanism used to ensure that only one thread can access a critical section at a time.
+	
+Before entering the critical section:
+	Acquire Lock
+After leaving:
+	Release Lock
+	
+Important Property
+	Ownership
+		A mutex has an owner.
+	Thread 1 acquires mutex
+		Only Thread 1 can release it.
+	Thread 2 cannot unlock it
+
+	This is one major difference from semaphores.
+	
+Can Mutex Cause Deadlock?
+	Yes.
+	
+Advantages of Mutex
+	1. Prevents Race Conditions
+		Ensures safe access to shared data.
+	2. Simple Concept
+		Easy to understand and implement.
+	3. Guarantees Mutual Exclusion
+		Only one thread enters at a time.
+		
+Disadvantages of Mutex
+	1. Deadlock Possibility
+		Incorrect lock ordering can cause deadlock.
+	2. Context Switching Overhead
+		Threads may block and wake up frequently.
+	3. Reduced Parallelism
+		Only one thread accesses the critical section.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Semaphore
+
+A semaphore is a synchronization primitive that uses a counter to control access to shared resources. Threads perform wait (P) and signal (V) operations to decrement and increment the semaphore value.
+
+Why Do We Need Semaphores?
+	Suppose you have: Database Connection Pool
+	with:
+		5 connections
+	and:
+		20 threads
+	
+	trying to access it.
+
+	Using a mutex:
+		Only 1 thread allowed
+	which wastes resources.
+	
+	Using a semaphore:
+		Up to 5 threads allowed
+
+	which matches the available resources.
+	
+A semaphore contains a counter. i.e - semaphore - 3
+
+Operations:
+	wait(p) - before entering apply wait() this decreases semaphore counter
+	Signal (v) - after leaving apply signal() this increases semaphore counter
+	
+Types of Semaphores
+	1. Binary Semaphore : 
+		values  - 0 or 1 , only one thread enters others wait.
+	2. Counting Semaphore
+		Values: 0, 1, 2, 3, 4, ...
+		Allows multiple threads.
