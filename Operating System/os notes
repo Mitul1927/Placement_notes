@@ -858,3 +858,83 @@ Learning - Segmentation, Virtual Memory, Page Fault, Demand Paging, TLB (Transla
 
 What is Virtual Memory?
 	Virtual Memory is a memory management technique that allows a program to execute even if it is larger than the available physical RAM.Virtual Memory is a memory management technique that allows a program to execute even if it is larger than the available physical RAM.
+	
+	Virtual Memory is a memory management technique in which the operating system uses both RAM and secondary storage (disk) to provide processes with a larger logical address space than the available physical memory.
+	
+Basic Idea
+	Instead of loading the entire program -> The OS loads only the pages currently needed.
+	
+When Does the OS Load More Pages?
+	Suppose the CPU needs Page 15 But Page 15 is not in your RAM, The CPU generates a page fault The OS then Finds Page 15 on disk Loads it into RAM Updates the page table Restarts the instruction.
+	
+Advantages of Virtual Memory
+1. Run Large Programs
+	Programs larger than RAM can execute.
+2. Better Memory Utilization
+	Only required pages stay in RAM.
+3. Supports Multitasking
+	More applications can run simultaneously.
+4. Process Isolation
+	Each process gets its own virtual address space.
+
+Disadvantages
+1. Slower Than RAM
+	Disk access is much slower than RAM.
+2. Page Fault Overhead
+	Every page fault requires disk access which is expensive.
+3. Thrashing
+	Suppose: RAM = Too Small, The OS constantly: Load Page, Remove Page, Load Another Page, Remove Another Page instead of executing the program.
+	This is called Thrashing which drops Performance dramatically.
+	
+Virtual Memory is a memory management technique that allows the operating system to use both RAM and disk storage to provide processes with a larger logical address space than the available physical memory. It works by loading only the required pages of a program into RAM and keeping the remaining pages on disk. This enables large applications to run efficiently and supports multitasking, although excessive page faults can lead to performance issues such as thrashing.
+
+Remember:
+
+RAM = Fast, limited physical memory.
+Virtual Memory = Illusion of a much larger memory space.
+Disk = Stores pages that aren't currently needed.
+Page Fault = Trigger to bring a missing page from disk into RAM.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Page Fault?
+	A Page Fault occurs when a process tries to access a page that is not currently present in RAM.
+Why Does a Page Fault Occur?
+	In Virtual Memory, not all pages of a process are loaded into RAM so when cpu tries to access the page which is not in ram results in page fault.
+	
+	
+Types of Page Faults
+1. Minor (Soft) Page Fault
+	The page is already in memory but not mapped into the process's page table.
+2. Major (Hard) Page Fault
+	The page is not in RAM.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Thrashing?
+	Thrashing is a condition in which the operating system spends more time swapping pages between RAM and disk than executing actual processes.
+	
+Symptoms of Thrashing
+	1. High Page Fault Rate
+	2. Low CPU Utilization
+	3. High Disk Usage
+		Disk activity becomes extremely high because pages are constantly swapped.
+	4. Slow System Performance
+	
+Why Does Thrashing Occur?
+	1. Insufficient RAM
+	2. Too Many Processes
+	3. Poor Page Replacement Algorithm
+	4. Excessive Memory Usage
+	
+Effects of Thrashing -
+	CPU utilization decreases.
+	Response time increases.
+	Throughput decreases.
+	Disk I/O becomes very high.
+	System becomes extremely slow.
+	
+Thrashing is a condition in which the operating system spends more time swapping pages between RAM and disk than executing actual processes. It occurs due to excessive page faults, typically when the available physical memory is insufficient for the running processes. Thrashing leads to high disk activity, low CPU utilization, and poor system performance. It can be reduced by increasing RAM, reducing the number of active processes, or using efficient page replacement algorithms.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
