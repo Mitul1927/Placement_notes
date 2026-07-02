@@ -852,8 +852,7 @@ Disadvantages of Paging
 
 Paging is a memory management technique in which logical memory is divided into fixed-size pages and physical memory is divided into fixed-size frames. The operating system uses a page table to map pages to frames, allowing processes to be stored in non-contiguous memory locations. Paging eliminates external fragmentation, supports virtual memory, and provides efficient memory management, although it may introduce internal fragmentation and page table overhead.
 
-Learning - Segmentation, Virtual Memory, Page Fault, Demand Paging, TLB (Translation Lookaside Buffer)Segmentation, Virtual Memory, Page Fault, Demand Paging, TLB (Translation Lookaside Buffer)
-
+Segmentation (done) , Virtual Memory (done) , Page Fault (done) , Demand Paging (done) , TLB (Translation Lookaside Buffer) (done) 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 What is Virtual Memory?
@@ -938,3 +937,251 @@ Thrashing is a condition in which the operating system spends more time swapping
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+What is Deadlock Prevention?
+	Deadlock Prevention is a technique used to ensure that a deadlock never occurs by preventing at least one of the four necessary conditions for deadlock.
+
+A deadlock occurs only if all four conditions are true:
+
+	Mutual Exclusion
+	Hold and Wait
+	No Preemption
+	Circular Wait
+
+	If we eliminate any one of these, deadlock cannot happen.
+	
+Deadlock prevention is a technique used by the operating system to ensure that deadlocks never occur by preventing at least one of the four necessary conditions for deadlock. This can be achieved by making resources sharable, requiring processes to request all resources at once, allowing resource preemption, or enforcing a fixed ordering of resource requests to eliminate circular wait.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What id Deadlock Avoidance?
+	Deadlock Avoidance is a technique where the operating system allows resource requests only if granting them keeps the system in a safe state.
+	
+Safe State vs Unsafe State
+
+Safe State
+	A state where there exists at least one sequence in which all processes can complete successfully.
+Unsafe State
+	A state where the OS cannot guarantee that all processes can complete.
+	
+An unsafe state may lead to a deadlock in the future.
+
+How Does Deadlock Avoidance Work?
+	Whenever a process requests a resource:
+		Request Resource
+		       │
+			   ▼
+		Pretend to Allocate
+		       │
+			   ▼
+		Check Safe State
+		       │
+		 ┌─────┴─────┐
+		 │           │
+		 ▼                  ▼
+		Safe      Unsafe
+		 │           │
+		 ▼                  ▼
+		Grant      Wait
+		
+Banker's Algorithm - 
+	Why "Banker's"?
+	Imagine a bank where customers request loans. The bank asks: "If I approve this loan, will I still have enough money to satisfy everyone eventually?" If: YES then Approve. Otherwise: NO and Reject for now.
+	
+Information Needed
+
+	Banker's Algorithm requires:
+
+	Information		Meaning
+	Available		Free resources
+	Max			Maximum resources each process may need
+	Allocation		Resources currently allocated
+	Need			Remaining resources required
+
+	Formula:
+
+	Need = Max - Allocation
+	
+Safe Sequence
+	Suppose: P2 can finish first After P2 completes: Resources Released Now: P1 can finish Then: P3
+	Safe sequence: P2 → P1 → P3
+	The existence of one such sequence means the system is in a safe state.
+	
+1. Need Maximum Resource Requirement 
+	Each process must declare: Maximum Resources Needed before execution. In real systems: Often Impossible
+	Applications don't always know their future needs.
+	
+Deadlock avoidance is a strategy in which the operating system allocates resources only if doing so keeps the system in a safe state. Before granting a resource request, the OS checks whether all processes can still complete successfully. The most common deadlock avoidance technique is Banker's Algorithm, which uses information such as available resources, maximum demand, allocation, and remaining need to determine whether granting a request is safe.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Segmentation?
+	Segmentation is a memory management technique in which a process is divided into variable-sized logical segments based on the program's structure.
+	
+A segment is a logical unit of a program.
+
+	Common segments are:
+		Code Segment
+		Data Segment
+		Heap Segment
+		Stack Segment
+
+Unlike paging: Pages = Fixed Size
+Segmentation uses: Segments = Variable Size
+
+Example
+
+	Suppose a program has:
+		Code = 40 KB
+		Data = 15 KB
+		Heap = 20 KB
+		Stack = 10 KB
+
+	Memory is divided as:
+		Segment 0 → Code (40 KB)
+		Segment 1 → Data (15 KB)
+		Segment 2 → Heap (20 KB)
+		Segment 3 → Stack (10 KB)
+
+	Each segment has a different size.
+	
+Segment Table
+
+	The operating system maintains a Segment Table.
+	Each entry contains:
+		Base Address
+		Limit (Size)
+		
+Why Is Segmentation Useful?
+	1. Logical Organization
+		Program parts remain separate.
+	2. Protection
+		Different permissions can be assigned.
+	3. Sharing
+		Two processes can share the same code segment.
+		
+Disadvantages
+	1. External Fragmentation
+		Since segments have different sizes: Memory develops gaps.
+	2. Compaction Needed
+		The OS may need to move segments together to eliminate gaps.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What id Demand Paging?
+	Demand Paging is a memory management technique in which pages are brought into physical memory only when they are first accessed. If a required page is not in RAM, a page fault occurs, and the operating system loads the page from disk.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Translation Lookaside Buffer?
+	A Translation Lookaside Buffer (TLB) is a small, high-speed cache inside the Memory Management Unit (MMU) that stores recently used page table entries.
+	
+The TLB stores recently used page table entries.
+
+	Instead of checking the page table in RAM first:
+
+	CPU
+	 │
+	 ▼
+	TLB
+	 │
+	 ├── Found?
+	 │
+	 ├── Yes → Get Frame Number
+	 │
+	 └── No
+		│
+		▼
+	   Page Table (RAM)
+
+	Most translations are found in the TLB.
+	
+how tlb works - 
+
+	CPU
+	 │
+	 ▼
+	Logical Address
+	 │
+	 ▼
+	MMU
+	 │
+	 ▼
+	TLB
+	 │
+	 ├── Hit
+	 │      │
+	 │      ▼
+	 │   Physical Address
+	 │
+	 └── Miss
+		│
+		▼
+	   Page Table
+		│
+		▼
+	Update TLB
+		│
+		▼
+	Physical Address
+		│
+		▼
+	RAM
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+File System Basics 
+	It defines how files are stored, organized, retrieved, and managed on storage devices like HDDs and SSDs.
+	
+Why Do We Need a File System?
+	Imagine a 1 TB hard disk without a file system.
+	The OS only sees:
+		000101010010101...
+		Millions of bytes.
+	Questions like:
+		Where does resume.pdf start?
+		Where does it end?
+		Which blocks are free?
+		Which blocks belong to which file?
+	cannot be answered.
+	The file system solves these problems.
+	
+What does a File System Do?
+	1. File Storage
+		Stores files on disk.
+	2. Directory Management
+		Organizes files into folders.
+	3. Space Management
+		Tracks: Free Blocks, Used Blocks
+	4. Access Control
+		Defines permissions.
+		Example - Read, Write, Execute.
+	5. File Metadata
+		Stores information like: File name, Size, Owner, Creation time, Last modified time, Permissions
+		
+Basic Structure: 
+		
+	Hard Disk
+	 │
+	 ▼
+	+----------------+
+	| File System    |
+	+----------------+
+		│
+		▼
+	Directories
+		│
+		▼
+	Files
+		│
+		▼
+	Data Blocks
+	
+What is a File?
+	A File is a collection of related data stored under a single name.
+	
+What is Metadata?
+	Metadata means: Data about data, it includes  - name , size , owner, created, permissions of file.
+	
+What is a Directory?
+	A Directory (or Folder) is a special file that stores information about other files.
+	
