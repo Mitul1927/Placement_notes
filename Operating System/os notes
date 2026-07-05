@@ -88,21 +88,21 @@ A Process Control Block (PCB) is a data structure maintained by the operating sy
 What are Process States?
 A process state represents the current status of a process during its lifecycle. Since the CPU can execute only a limited number of processes at a time, the operating system moves processes between different states.
 
-        +------+
-        | New  |
-        +------+
-            |
-            v
-        +-------+
-        | Ready |
-        +-------+
-            |
-            v
-        +---------+
-        | Running |
-        +---------+
-         /       \
-        /         \
+	+------+
+	| New  |
+	+------+
+	    |
+	    v
+	+-------+
+	| Ready |
+	+-------+
+	    |
+	    v
+	+---------+
+	| Running |
+	+---------+
+	 /       \
+	/         \
        v           v
  +---------+   +------------+
  | Waiting |   | Terminated |
@@ -276,17 +276,17 @@ It includes:
 	Scheduling Information
 	
 Process A Running
-        |
-        v
+	|
+	v
  Save Context
-        |
-        v
+	|
+	v
  Scheduler Selects B
-        |
-        v
+	|
+	v
  Load Context
-        |
-        v
+	|
+	v
  Process B Running
  
  Process Context Switch - 
@@ -856,8 +856,7 @@ Segmentation (done) , Virtual Memory (done) , Page Fault (done) , Demand Paging 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 What is Virtual Memory?
-	Virtual Memory is a memory management technique that allows a program to execute even if it is larger than the available physical RAM.Virtual Memory is a memory management technique that allows a program to execute even if it is larger than the available physical RAM.
-	
+	Virtual Memory is a memory management technique that allows a program to execute even if it is larger than the available physical RAM.
 	Virtual Memory is a memory management technique in which the operating system uses both RAM and secondary storage (disk) to provide processes with a larger logical address space than the available physical memory.
 	
 Basic Idea
@@ -969,10 +968,10 @@ How Does Deadlock Avoidance Work?
 	Whenever a process requests a resource:
 		Request Resource
 		       │
-			   ▼
+		           ▼
 		Pretend to Allocate
 		       │
-			   ▼
+		           ▼
 		Check Safe State
 		       │
 		 ┌─────┴─────┐
@@ -1185,3 +1184,136 @@ What is Metadata?
 What is a Directory?
 	A Directory (or Folder) is a special file that stores information about other files.
 	
+File Operations
+The OS provides operations like: Open, Read, Write, Append, Rename, Delete, Close.
+
+File Access Methods
+There are mainly two ways to access files.
+	1. Sequential Access - Data is read in order. e.g - page 1 then page 2 then page 3 like music, videos, log files.
+	2. Random (Direct) Access - Jump directly to any location, used by Databases, Operating Systems and editors.
+	
+File Allocation Methods
+The OS must decide where files are stored.
+There are three common methods.
+	1. Contiguous Allocation - Block 10, 11, 12, 13. Advantage - Fast Access, Disadvantage - External fragmentation.
+	2. Linked Allocation - 10 → 45 → 80 → 100. Advantage - No External fragmentation, Disadvantage - Slow random access.
+	3. Indexed Allocation - An index block stores pointers to all file blocks. Index - 10 35 67 90 Advantage - Fast random access and no external fragmentaion.
+	
+Common File Systems
+Different operating systems use different file systems.
+	Operating System	File System
+	Windows			NTFS, FAT32, exFAT
+	Linux			ext4, XFS, Btrfs
+	macOS			APFS
+	
+Advantages of a File System
+	Organizes data efficiently.
+	Supports directories.
+	Provides security through permissions.
+	Tracks free and used space.
+	Makes data retrieval fast.
+
+A file system is the component of an operating system responsible for organizing, storing, retrieving, and managing files on storage devices. It maintains directories, file metadata, permissions, and free space information. It also provides file operations such as create, read, write, and delete. Different operating systems use different file systems, such as NTFS for Windows, ext4 for Linux, and APFS for macOS.
+
+Learning - File System, Inode, Hard Link vs Soft Link, Journaling, Disk Scheduling, RAID.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Disk Scheduling -
+	Disk scheduling is the technique used by the operating system to determine the order of servicing disk read/write requests so that disk access time is minimized and overall system performance is improved.
+	
+Why Do We Need Disk Scheduling?
+	Suppose five processes request data from different disk locations.
+	Requests - 95 , 180, 34, 119, 11 and current disk head position - 50
+	Without scheduling: 	The disk head moves randomly.
+	With scheduling: The OS chooses a better order to reduce movement.
+	
+Disk Access Time = Seek Time + Rotational Latency  + Transfer time
+
+1. Seek Time
+	Time taken to move the read/write head to the required track.
+2. Rotational Latency
+	After reaching the correct track: The disk must rotate until the desired sector comes under the head.
+3. Transfer Time
+	Actual time to read/write data.
+	
+Goals of Disk Scheduling
+	Reduce seek time.
+	Reduce waiting time.
+	Increase throughput.
+	Improve response time.
+	
+Common Disk Scheduling Algorithms - 
+	1. FCFS
+	2. SSTF
+	3. SCAN
+	4. C-SCAN
+	5. LOOK
+	6. C-LOOK
+
+1. FCFS (First Come First Serve)
+	Requests are handled in arrival order.
+2. SSTF (Shortest Seek Time First)
+	Choose the request closest to the current head.
+3. SCAN (Elevator Algorithm)
+	The head moves in one direction, servicing all requests after reaching end, it reverses.
+4. C-SCAN (Circular SCAN)
+	The head moves only in one direction, When it reaches the end like 199 then it jumps to 0 then continues
+5. LOOK
+	Similar to SCAN Difference: Instead of going all the way to: Track 199 the head turns around after servicing the last request.
+6. C-LOOK
+	Similar to C-SCAN. Difference: instead of jumping from 199 to 0 it jumps directly from last request to 0
+	
+Comparison Table
+Algorithm	Idea					Starvation	Performance
+FCFS		Arrival order				No		Low
+SSTF		Nearest request				Yes		Good
+SCAN		Move both directions			Rare		Better
+C-SCAN		One direction only			No		Better fairness
+LOOK		SCAN without going to disk ends		Rare		Better than SCAN
+C-LOOK		C-SCAN without going to disk ends	No		Better than C-SCAN
+
+
+Disk scheduling is the process of deciding the order in which disk I/O requests are serviced to minimize seek time and improve overall disk performance. Common algorithms include FCFS, SSTF, SCAN, C-SCAN, LOOK, and C-LOOK. Among these, SSTF provides lower seek time but may cause starvation, while SCAN and LOOK offer a good balance between efficiency and fairness.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Why is the disk access slower than the ram?
+	RAM is electronic memory with no moving parts, whereas a traditional Hard Disk Drive (HDD) is a mechanical device with moving parts.
+
+There are three main reasons.
+	1. Mechanical Movement (Biggest Reason)
+		RAM is made of elctronic circuits, When the CPU requests data: The memory chip immediately provides the data. No physical movement is required.
+		Hard Disk (HDD) - An HDD contains: Spinning Disk + Moving Read/Write Head, Before reading data : 1. Move the head 2. Wait for disk to rotate 3. Read the data.
+		Mechanical movement takes milliseconds while Electronics operate in nanoseconds.
+	2. Seek Time
+		The head must physically move to make up for the request at track 150, RAM has no seek time.
+	3. Rotational Latency
+		Even after reaching the correct track: The required sector might not be under the head yet. The disk must rotate until the correct sector arrives. Ram doesn't rotate.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is fragmentation?
+	Fragmentation is a memory management problem in which memory becomes inefficiently utilized due to the way memory is allocated and deallocated.
+	
+There are two types:
+	Internal Fragmentation
+	External Fragmentation
+	
+1. Internal Fragmentation
+	Internal Fragmentation occurs when allocated memory is larger than the requested memory, leaving unused space inside the allocated block.
+2. External Fragmentation
+	External Fragmentation occurs when free memory exists but is scattered into many small pieces, so a large continuous block cannot be allocated.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is an operating system?
+	An Operating System is system software that acts as an intermediary between the user, application programs, and computer hardware. It manages resources such as the CPU, memory, storage, and I/O devices, and provides an environment for applications to execute.
+	
+Main Functions of an Operating System - 
+	1. Process Management - Process creation, termination, cpu scheduling, context switching, synchronization.
+	2. Memory Management - which process gets memory, how much memory , when memory is released, paging, virtual memory , page faults.
+	3. File System Management - organizes files and handles - create, read , write, delete , permissions.
+	4. Device Management - keyboard, printer, mouse.
+	5. Security & Protection - user accounts, passwords, permissions.
+	6. Resource Allocation - cpu, ram, disk, network.
