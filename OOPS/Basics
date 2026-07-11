@@ -1,0 +1,131 @@
+What is Object Oriented Programming?
+	Object-Oriented Programming (OOP) is a programming paradigm that organizes software around objects rather than functions. An object represents a real-world entity and contains both data (fields/attributes) and behavior (methods). OOP helps make code modular, reusable, maintainable, and scalable through four main principles: Encapsulation, Inheritance, Polymorphism, and Abstraction.
+		Advantages of OOP 
+			Code Reusability
+			Better Code Organization
+			Easy Maintenance
+			Easy Scalability
+			Better Security (Encapsulation)
+			Real-world Modeling
+			
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is a class?
+	A class is a blueprint or template used to create objects. It defines the properties (fields/variables) and behaviors (methods) that the objects of that class will have. A class itself does not occupy memory for object data until an object is created.
+
+Characteristics of a Class
+	It is a user-defined data type.
+	It acts as a blueprint for creating objects.
+	It contains:
+		Fields (variables)
+		Methods
+		Constructors
+		Blocks (optional)
+		Nested classes (optional)
+	It does not store object-specific data until objects are created.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is an object?
+	An object is an instance of a class. It is a real entity created from a class that contains its own copy of the class's fields (data) and can use the class's methods (behavior). Objects occupy memory when they are created using the new keyword.
+	
+Characteristics of an Object
+	Every object has three characteristics:
+		1. State
+			The data stored in the object.
+		2. Behavior
+			The actions the object can perform.
+		3. Identity
+			A unique identity assigned by the JVM, which distinguishes one object from another, even if they contain the same data.
+			
+Objects are stored in heap memory.
+The reference variable (v1) is stored in the stack memory.
+
+An object is an instance of a class. It is created using the new keyword and contains its own copy of the class's fields and can access the class's methods. Objects represent real-world entities, occupy memory in the heap, and each object has its own state, behavior, and identity.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Attributes
+	Attributes are the data members (variables) of a class that define the state or characteristics of an object. Every object has its own copy of the instance attributes.
+
+Example
+	Consider a Student class.
+	class Student {
+	    String name;
+	    int age;
+	    double marks;
+	}
+	Here name, age, marks are attributes.
+	
+Imagine a Car.
+
+Its attributes are: Brand, Color, Model, Speed, Fuel Level.
+
+Attributes describe what the object has.It stores data, represents it's state.
+
+Instance Attributes vs Static Attributes
+	Instance Attribute
+		Each object gets its own copy.
+	Static Attribute
+		Shared by all objects.
+		
+Attributes are the variables declared inside a class that represent the state or characteristics of an object. They store the data associated with an object, and each object has its own copy of instance attributes. For example, in a Student class, name, age, and marks are attributes.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Methods
+	A method is a block of code inside a class that defines the behavior or actions of an object. It performs a specific task and can be called whenever needed, making code reusable and organized.
+	
+Components of a Method
+	public int add(int a, int b) {
+	    return a + b;
+	}
+	
+	Part	Meaning
+	public	Access modifier
+	int	Return type
+	add	Method name
+	(int a, int b)	Parameters
+	return	Returns the result
+	
+Types of Methods
+	1. Method Without Parameters
+		void greet() {
+		    System.out.println("Hello");
+		}
+	2. Method With Parameters
+		void greet(String name) {
+		    System.out.println("Hello " + name);
+		}
+	3. Method With Return Value
+		int add(int a, int b) {
+		    return a + b;
+		}
+	4. Method Without Return Value
+		void printName() {
+		    System.out.println("Rahul");
+		}
+		
+Instance Method vs Static Method
+	Instance Method
+		Belongs to an object.
+			class Student {
+
+			    void study() {
+				System.out.println("Study");
+			    }
+			}
+		Call:
+			Student s = new Student();
+			s.study();
+	Static Method
+		Belongs to the class.
+			class Student {
+			    static void collegeName() {
+				System.out.println("ABC College");
+			    }
+			}
+		Call:
+			Student.collegeName();
+			
+A method is a block of code defined inside a class that represents the behavior of an object. It performs a specific task and can accept parameters and return a value. Methods improve code reusability, readability, and maintainability.
