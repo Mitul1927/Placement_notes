@@ -129,3 +129,149 @@ Instance Method vs Static Method
 			Student.collegeName();
 			
 A method is a block of code defined inside a class that represents the behavior of an object. It performs a specific task and can accept parameters and return a value. Methods improve code reusability, readability, and maintainability.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Constructor-
+	A constructor is a special member of a class that is automatically called when an object is created. Its primary purpose is to initialize the object's data (instance variables). A constructor has the same name as the class and does not have a return type, not even void.
+	
+Types of Constructors
+	1. Default Constructor
+		If you don't write any constructor, Java automatically provides a default constructor.
+	2. No-Argument Constructor
+		A constructor you write that takes no parameters.
+	3. Parameterized Constructor
+		Accepts values during object creation.
+
+Constructor Overloading
+	A class can have multiple constructors with different parameter lists.
+	like - student(), student(String name), student(String name, int age)
+	
+Important Keyword: this (learn about it yourself <*\_/*> )
+
+Again - A constructor is a special member of a class that is automatically invoked when an object is created. Its purpose is to initialize the object's instance variables. A constructor has the same name as the class and does not have a return type. Java supports default, no-argument, and parameterized constructors, and constructors can be overloaded but not overridden.
+
+What is Constructor Chaining?
+	Constructor chaining is the process of calling one constructor from another constructor to avoid code duplication and reuse initialization logic.
+	Java provides two ways to do this:
+		this() → Calls another constructor in the same class.
+		super() → Calls the constructor of the parent class.
+		
+		```
+			class Student {
+
+			    String name;
+			    int age;
+
+			    Student() {
+				this("Unknown", 18);
+			    }
+
+			    Student(String name) {
+				this(name, 18);
+			    }
+
+			    Student(String name, int age) {
+				this.name = name;
+				this.age = age;
+			    }
+			}
+		```
+		Rules for this()
+			Rule 1
+				It must be the first statement inside a constructor.
+			Rule 2
+				A constructor can call only one constructor using this().
+				
+		super() -> we'll learn that in inheritance.
+		Difference between this() and super()
+		this()								super()
+		Calls another constructor in the same class			Calls a constructor of the parent class
+		Used for constructor chaining within a class			Used to initialize the parent part of an object
+		Must be the first statement					Must also be the first statement
+		Cannot be used together in the same constructor			Cannot be used together in the same constructor
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Destructor - 
+	A destructor is a special method that is automatically called when an object is destroyed to release resources such as memory or file handles. Java does not have destructors. Instead, Java uses Garbage Collection (GC) to automatically reclaim memory occupied by objects that are no longer reachable.
+
+
+In languages like C++, a destructor is a special function that runs automatically when an object is destroyed.
+
+example - 
+```
+	class Student {
+	public:
+	    Student() {
+		cout << "Constructor Called";
+	    }
+
+	    ~Student() {
+		cout << "Destructor Called";
+	    }
+	};
+```
+
+Here:
+	Constructor → Runs when the object is created.
+	Destructor → Runs when the object is destroyed.
+	
+finalize() - 
+	Older versions of Java had a method called finalize().
+	However:
+		finalize() is deprecated (since Java 9) and should not be used.
+		There is no guarantee it will be called before an object is collected.
+		It was removed because it caused performance and reliability issues.
+		
+Constructor vs Destructor
+Constructor						Destructor
+Creates/initializes an object				Cleans up when an object is destroyed
+Java supports constructors				Java does not support destructors
+Called automatically during object creation		In Java, memory cleanup is handled by the Garbage Collector
+
+System.gc() request to the JVM to perform garbage collection. The JVM may ignore it.
+
+Java does not have destructors. Instead, it uses an automatic Garbage Collector to reclaim memory occupied by objects that are no longer reachable. For non-memory resources such as files, sockets, or database connections, Java relies on explicit cleanup, preferably using try-with-resources.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Instance variable vs Local variable
+
+Instance Variable
+	An instance variable is a variable declared inside a class but outside any method, constructor, or block. Each object of the class gets its own copy of the instance variables.
+
+Local Variable
+	A local variable is a variable declared inside a method, constructor, or block. It exists only during the execution of that method or block.
+	
+Memory
+	Instance Variables
+		Stored inside the object (on the Heap).
+		Every object gets its own copy.
+	Local Variables
+		Stored in the Stack Memory.
+Lifetime
+	Instance Variable
+		Lives as long as the object exists.
+	Local Variable
+		Exists only while the method is executing.
+Default Values
+	Instance Variables
+		Java automatically initializes them.
+	Local Variables
+		Java does not initialize them.
+		
+Access
+	Instance Variable
+		Accessible by every instance method of the class.
+	Local Variable
+		Accessible only inside the method where it is declared.
+		
+		
+An instance variable is declared inside a class but outside methods and belongs to an object. Each object has its own copy, and Java automatically initializes it with default values. A local variable is declared inside a method, constructor, or block, exists only during that method's execution, and must be initialized before use.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Why is object oriented better than procedural programming?
+	Object-Oriented Programming is preferred over Procedural Programming because it organizes software into objects that combine data and behavior. This leads to better code organization, reusability, maintainability, scalability, and security. Features such as Encapsulation, Inheritance, Polymorphism, and Abstraction make OOP especially suitable for building large and complex applications, while procedural programming is generally more suitable for small, simple programs.
