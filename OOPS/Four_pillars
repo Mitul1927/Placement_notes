@@ -1,0 +1,123 @@
+The Four Pillars
+
+Encapsulation - 
+	Encapsulation is the process of wrapping data (variables) and the methods that operate on that data into a single unit (a class) while restricting direct access to the data. In Java, encapsulation is achieved by declaring variables as private and providing controlled access through getter and setter methods.
+	
+Why Do We Need Encapsulation?
+	Without Encapsulation Anyone can write the bank's balance as negative.
+	
+How is Encapsulation Achieved in Java?
+	Three simple steps:
+		Step 1: Make variables private
+		Step 2: Provide a Getter
+		Step 3: Provide a Setter
+		
+Data Hiding vs Encapsulation
+	Data Hiding
+		Means protecting data from direct access.
+	Encapsulation
+		Means:
+			Wrapping data and methods together
+			Restricting direct access to data
+			
+Data hiding is part of encapsulation.
+
+
+Encapsulation is the process of wrapping data and the methods that operate on that data into a single unit (a class) while restricting direct access to the data. In Java, it is achieved by making variables private and providing controlled access through public methods such as getters, setters, or other business methods. Encapsulation improves data security, validation, maintainability, and flexibility.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Abstraction-
+	Abstraction is the process of hiding implementation details and showing only the essential functionality to the user. It allows users to know what an object does without knowing how it does it. In Java, abstraction is achieved using abstract classes and interfaces.
+	
+Real-Life Analogy - Car - you use steering wheel but don't need to know how fuel is injected and how the engine combusts fuel. You only use the functionality this is abstraction.
+
+Example - 
+	how to use it - 
+		abstract class Vehicle {
+		    abstract void start();
+		}
+		
+	how to implement it - 
+		class Car extends Vehicle {
+
+		    @Override
+		    void start() {
+			System.out.println("Car starts using a key or push button.");
+		    }
+		}
+
+		class Bike extends Vehicle {
+
+		    @Override
+		    void start() {
+			System.out.println("Bike starts using a self-start or kick.");
+		    }
+		}
+
+	Usage - 
+		public class Main {
+
+		    public static void main(String[] args) {
+
+			Vehicle v1 = new Car();
+			Vehicle v2 = new Bike();
+
+			v1.start();
+			v2.start();
+		    }
+		}
+		
+Another example using Interface - 
+		interface Payment {
+		    void pay(double amount);
+		}
+
+	Implementation - 
+		class CreditCardPayment implements Payment {
+
+		    @Override
+		    public void pay(double amount) {
+			System.out.println("Paid using Credit Card");
+		    }
+		}
+
+		class UpiPayment implements Payment {
+
+		    @Override
+		    public void pay(double amount) {
+			System.out.println("Paid using UPI");
+		    }
+		}
+		
+	Usage - 
+		Payment payment = new UpiPayment();
+
+		payment.pay(500);
+		
+Why Do We Need Abstraction?
+	Without abstraction:
+		The user would need to know every implementation detail.
+	With abstraction:
+		The user only knows: pay(). and not which bank or which api to call or what algorithm.
+		
+		
+How is Abstraction Achieved in Java?
+	1. Abstract Class
+		Can have both abstract and concrete methods.
+		Can have constructors and instance variables.
+		A class can extend only one abstract class.
+	2. Interface
+		Defines a contract that implementing classes must follow.
+		A class can implement multiple interfaces.
+		
+Abstraction is the process of hiding implementation details and exposing only the essential functionality to the user. It helps reduce complexity by allowing users to focus on what an object does rather than how it does it. In Java, abstraction is achieved using abstract classes and interfaces.
+
+
+Abstract Class vs Interface -
+	An abstract class is used when multiple related classes share common state (fields) and behavior (implemented methods). It can have both abstract and concrete methods.
+
+	An interface defines a contract that classes agree to implement. It is used to specify what a class should do, without forcing a shared implementation. A class can implement multiple interfaces, enabling multiple inheritance of type.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
