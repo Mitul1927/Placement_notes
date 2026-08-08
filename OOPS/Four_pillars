@@ -121,3 +121,111 @@ Abstract Class vs Interface -
 	
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Inheritance -
+	Inheritance is an OOP concept in which one class (called the child or subclass) acquires the properties and behaviors of another class (called the parent or superclass). It promotes code reusability, reduces duplication, and establishes an IS-A relationship between classes.
+	
+Why do we need inheritance?
+	because we have to write code again and again for same work so we just inherit the code from parent class.
+
+Types of Inheritance in Java
+	1. Single Inheritance ✅
+		One parent → One child
+	2. Multilevel Inheritance ✅
+		Grand parent -> parent -> child = subDog gets features from both Mammal and Animal.
+	3. Hierarchical Inheritance ✅
+		parent -> child 1
+		parent -> child 2
+		parent -> child 3
+	4. Multiple Inheritance ❌ (Classes)
+		Java does not support multiple inheritance using classes.
+		Why? Because of the Diamond Problem. But Java Supports Multiple Inheritance Using Interfaces
+		
+super
+	The super keyword refers to the immediate parent class. It is used to access parent class variables, invoke parent class methods, and call parent class constructors.
+
+Upcasting
+	Upcasting is assigning a child object to a parent reference. It happens implicitly and is mainly used to achieve runtime polymorphism.
+
+Downcasting
+	Downcasting is converting a parent reference back to a child reference using an explicit cast. It allows access to child-specific methods but should be done carefully because an incorrect cast results in a ClassCastException.
+	
+compostion - has a relationship like engine in car. 
+inheritance - is a relationship like vehicle is a car.
+
+Inheritance models an IS-A relationship, where a subclass inherits properties and behavior from a superclass using the extends keyword. Composition models a HAS-A relationship, where a class contains objects of other classes to reuse functionality. Inheritance creates tighter coupling and is suitable when there is a true hierarchical relationship, while composition provides greater flexibility and loose coupling by allowing components to be replaced or changed independently.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Polymorphism - 
+	Polymorphism is the ability of an object to take multiple forms. In Java, it allows the same method name or interface to exhibit different behaviors depending on the context. Polymorphism is of two types:
+	Compile-time Polymorphism (Method Overloading)
+	Runtime Polymorphism (Method Overriding)
+	
+Why do we need Polymorphism?
+	so that the same thing performs different actions depending on the situation.
+	
+Types of Polymorphism - 
+	1. Compile-Time Polymorphism (Method Overloading)
+		Multiple methods have the same name but different parameter lists.
+		it can be number of parameters or different type of parameters or order of parameters, only changing the return type is not overloading.
+	2. Runtime Polymorphism (Method Overriding)
+		Method overriding occurs when a child class provides its own implementation of a method already defined in the parent class.
+		
+		
+Dynamic Method Dispatch - 
+	class Shape {
+	    void draw() {
+		System.out.println("Drawing Shape");
+	    }
+	}
+	class Circle extends Shape {
+	    @Override
+	    void draw() {
+		System.out.println("Drawing Circle");
+	    }
+	}
+	class Rectangle extends Shape {
+	    @Override
+	    void draw() {
+		System.out.println("Drawing Rectangle");
+	    }
+	}
+	Usage - 
+		Shape shape;
+
+		shape = new Circle();
+		shape.draw();
+
+		shape = new Rectangle();
+		shape.draw();
+	Output - 
+		Drawing Circle
+		Drawing Rectangle
+		
+Polymorphism is the ability of an object to take multiple forms. In Java, it allows the same method or interface to behave differently depending on the object. It has two forms: compile-time polymorphism, achieved through method overloading, and runtime polymorphism, achieved through method overriding. Runtime polymorphism enables dynamic method dispatch, where the JVM invokes the overridden method based on the actual object's type.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Default Constructor - 
+	A default constructor is a constructor that is automatically provided by the Java compiler if no constructor is defined in a class. It has no parameters and initializes instance variables with their default values.
+	
+Data Type	Default Value
+int			0
+double			0.0
+boolean			false
+char			'\u0000'
+Object Reference	null
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Parameterized Constructor -
+	A parameterized constructor is a constructor that accepts one or more parameters. It is used to initialize an object's instance variables with specific values at the time of object creation.
+	
+A parameterized constructor is a constructor that accepts one or more parameters and is used to initialize an object's instance variables with specific values at the time of object creation. It allows different objects to be created with different initial states.
+
+Can a Constructor call another constructor?
+	Yes , Using this keyword.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+Static Binding (Early Binding) is the process of resolving a method call at compile time. It is used for method overloading, static methods, private methods, and final methods. Dynamic Binding (Late Binding) resolves method calls at runtime based on the actual object's type. It is used in method overriding and enables runtime polymorphism.
