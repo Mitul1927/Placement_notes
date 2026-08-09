@@ -1,0 +1,49 @@
+Default Constructors - 
+	A default constructor is a no-argument constructor automatically provided by the Java compiler when a class does not explicitly define any constructor. It initializes instance variables to their default values and implicitly calls the superclass's no-argument constructor.
+	
+String  → null
+int     → 0
+boolean → false
+double  → 0.0
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Parameterized Constructors - 
+	A parameterized constructor is a constructor that accepts one or more parameters and is used to initialize an object's instance variables with specific values when the object is created
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+Copy Constructor - 
+	A copy constructor is a constructor that creates a new object by copying the state of an existing object of the same class.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+Constructor chaining - 
+	Constructor chaining is the process of calling one constructor from another constructor to reuse initialization logic and avoid duplicate code.
+	
+Java provides two ways:
+	this() → calls another constructor in the same class
+	super() → calls a constructor of the parent class
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Key words & There Concepts - 
+
+this - 
+	this is a reference variable that refers to the current object. It is used to access the current object's instance variables and methods, call another constructor in the same class using this(), and pass or return the current object.
+	
+super - 
+	super is a reference keyword used to refer to the immediate parent class. It is used to access the parent class's variables and methods and to call the parent class's constructor.
+	No super(...) written
+		↓
+	Java inserts super()
+		↓
+	Parent must have Parent()
+	
+final - 
+	The final keyword is used to restrict modification. Depending on where it is used, it can prevent a variable from being reassigned, a method from being overridden, or a class from being inherited.
+	final object reference is final but it's inside can be changed. like s.name can be changed but not s.
+
+static - 
+	static means the member belongs to the class rather than to individual objects.
+	other - The static keyword indicates that a member belongs to the class rather than individual objects. Static variables have one shared copy across all objects, and static methods can be called without creating an object. Static methods cannot directly access instance members or use this and super. Static methods are resolved at compile time, so they participate in method hiding rather than runtime method overriding.
