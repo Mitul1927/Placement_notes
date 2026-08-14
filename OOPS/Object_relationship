@@ -1,0 +1,20 @@
+Association -
+	Association is a relationship between two independent objects where one object is connected to or uses another object. It represents a general "uses-a" or "knows-a" relationship between objects.
+	
+	other definition - Association is a general relationship between two or more independent objects where they interact with or are connected to each other. It represents relationships such as "uses-a" or "knows-a". Association can be one-to-one, one-to-many, or many-to-many. Aggregation and composition are more specific forms of association that introduce ownership relationships.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Aggregation - 
+	Aggregation is a relationship between two objects where one object contains or uses another object, but both objects can exist independently. It represents a weak HAS-A relationship.
+	
+	other definition - Aggregation is a weak HAS-A relationship between objects where the contained object can exist independently of the container. It is a specialized form of association and represents weak ownership. For example, a Department can have Employees, but Employees can exist even if the Department is removed. The main difference from composition is that aggregation allows independent lifecycles.
+	example  - department and employee.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Composition - 
+	Composition is a strong HAS-A relationship where one object is composed of another object, and the contained object's lifecycle is strongly dependent on the containing object.
+	
+	
+	other definition - Composition is a strong HAS-A relationship where one object strongly owns another object, and the contained object's lifecycle is dependent on the containing object. It is a specialized form of association. For example, a House can be composed of Rooms. Composition is often preferred over inheritance because it provides greater flexibility and reduces tight coupling.
+	example  - house and room.
