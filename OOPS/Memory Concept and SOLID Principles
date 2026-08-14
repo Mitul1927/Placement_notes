@@ -1,0 +1,62 @@
+Stack memory - 
+	Stack memory is a memory area used by each thread to store method call information, including local variables, method parameters, and references to objects. Each method call creates a stack frame, which is removed when the method finishes execution.
+
+What is a Stack Frame?
+	Every time a method is called, Java creates a stack frame for that method.
+	
+What Goes Into Stack Memory?
+	Local primitive variables, Method parameters, References to objects
+	
+other defintion - Stack memory is a per-thread memory area used to store method execution information. Each method call creates a stack frame containing local variables, parameters, and references. When the method returns, its stack frame is removed. Stack memory follows LIFO order, and excessive recursion can exhaust it and cause a StackOverflowError. Objects themselves are generally stored in heap memory, while local references to those objects are stored in stack frames.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Heap memory - 
+	Heap memory is a shared memory area in the JVM where objects and their associated instance data are generally allocated. It is managed by the Garbage Collector, which removes objects that are no longer reachable.
+	
+Why Do We Need Heap Memory?
+	Objects often need to live longer than a single method call.
+	
+other definition - Heap memory is a JVM memory area shared among threads where objects and their instance data are generally allocated. It is managed by the Garbage Collector, which can reclaim memory from objects that are no longer reachable. Unlike stack memory, which is per-thread and stores method execution frames, heap memory is shared and primarily stores dynamically created objects.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+object creation - 
+	Object creation is the process of creating an instance of a class using the new keyword. During object creation, memory is allocated for the object, its fields are initialized, the constructor is executed, and a reference to the object is returned.
+	
+             new Student(...)
+		      ↓
+	     Allocate object memory
+		      ↓
+	   Initialize fields to defaults
+		      ↓
+	       Constructor executes
+		      ↓
+	      Object is initialized
+		      ↓
+	   Reference returned
+		      ↓
+	       s stores reference
+	     
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Single Responsibility Principle - 
+	A class should have only one responsibility, and therefore it should have only one reason to change.
+	
+other definition - The Single Responsibility Principle states that a class should have one responsibility and therefore one reason to change. It encourages separating unrelated concerns into different classes, which improves maintainability, testability, and reduces coupling. It does not mean a class can have only one method; rather, its methods should be cohesive around a single responsibility.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+open closed principle - 
+	Software entities such as classes, modules, and functions should be open for extension but closed for modification.
+
+most common to implement ocp is interfaces.
+
+Design the code so that new kinds of behavior can usually be added through extension rather than repeatedly modifying stable existing code.
+
+OCP can be achieved using: Interfaces, Inheritance, composition, polymorphism, strategy pattern, dependency injection.
+
+other defintion - The Open/Closed Principle states that software entities should be open for extension but closed for modification. We should design classes so that new behavior can be added without repeatedly changing existing, stable code. In Java, this is commonly achieved using interfaces or abstract classes with polymorphism.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
