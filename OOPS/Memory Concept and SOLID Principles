@@ -60,3 +60,25 @@ other defintion - The Open/Closed Principle states that software entities should
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Liskov Substitution Principle - 
+	A child class should be usable wherever its parent class is expected, without breaking the correctness of the program.
+	
+If B is a subtype of A, you should be able to replace A with B without unexpected behavior.
+
+The Liskov Substitution Principle states that objects of a subclass should be replaceable for objects of the superclass without changing the correctness or expected behavior of the program. In other words, subclasses should honor the contract and behavior expected from their parent class.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Interface segregation principle - 
+	A class should not be forced to implement methods that it does not need.
+	
+for example a human interface can have - work , eat , sleep but a robot can't have all of these things.
+
+The Interface Segregation Principle states that a class should not be forced to depend on methods it does not use. Instead of creating large, general-purpose interfaces, we should create smaller, focused interfaces so that implementing classes only depend on the functionality they actually need.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+dependency inversion principle - 
+	High-level classes should not depend directly on low-level implementation classes. Both should depend on abstractions.
+	
+The Dependency Inversion Principle states that high-level modules should not depend directly on low-level modules. Both should depend on abstractions, and abstractions should not depend on implementation details. In Java, this is commonly achieved using interfaces and dependency injection.
