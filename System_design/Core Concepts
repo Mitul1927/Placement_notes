@@ -1,0 +1,153 @@
+Scalabilty 
+
+Scalability is the ability of a system to handle increased load by adding resources. The key word here is "ability", a scalable system can grow to meet demand without requiring a complete architectural overhaul.
+	
+Vertical Scaling (Scale Up) -
+	Vertical scaling means adding more power to your existing machines. Instead of adding more servers, you upgrade to bigger ones.
+
+Horizontal Scaling (Scale Out) - 
+	Horizontal scaling means adding more machines rather than upgrading existing ones. Instead of one powerful server, you distribute the load across many commodity servers.
+	
+stateless servers are required in horizontal scaling , we can use jwt sessions, store session data in shared cache like redis.
+
+scaling different components - 
+	1.) Application Tier - 
+		key strategies - make services stateless, use a load balancer to distribute traffic, auto scaled based on cpu, memory or request count, deploy across multiple availability zones.
+		
+	2.) Database Tier - 
+		it's not easy , we have to make sure data consistency, durability and transaction isolations.
+		it depends on your workload -> 1.) Read Heavy -> Read Replicas 2.) Write Heavy -> Sharding 3.) Both -> Sharding + Replicas 4.) Need flexibity -> Consider NoSQL
+			1.) Read Replicas -> one primary db and two read replicas, write on primary and primary will write on both replicas and read only from replicas.
+			2.) Sharding (Partitioning) -> three dbs each handling write requests for a group of people diving all users in no. of databases part, common sharding techniques - hash based or range based 
+			3.) NoSQL -> databases like cassandra, MongoDB	and DynamoDB automatically scale from the ground up. they have built in sharding, eventual consistency and no joins.
+			
+	3.) Caching Tier -
+		reduces load on databases and improves response times. 
+		strategies -> Redis Cluster, Consistent hashing, Cache-aside pattern.
+	
+	4.) Message Queue Tier -
+		these are essential for scaling asynchronous workloads.
+		message queues like kafka/RabbitMQ -> decouples producers and consumers (scale each independently) , Queue absorbs bursts and consumers process at their own pace.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Availability - 
+	Availability measures how often your system is operational and accessible to users. A highly available system continues functioning even when individual components fail.
+	Availability = Uptime / (Uptime + Downtime)
+	The "Nines" of Availability - one - 90% , two - 99%, three - 99.9% , four - 99.99%, five - 99.999% , six - 99.9999%
+	
+	
+	
+Availability in serires vs parallel - 
+	Components in series - 
+		When components are in series, meaning all must work for the system to function, availability multiplies: if web server is 99.9% , app server is 99.9% and db server is 99.9% then overall is  - 99.7%
+		
+	Components in parallel - 
+		When components are in parallel, meaning any can handle the request, availability improves dramatically: two servers after a load balancer with failure - 0.01% then it makes both of them failure rate - 0.0001%
+		
+		
+		
+Possible failures - 
+	Hardware failures - 
+		hard drive , ssd, server, network switch , power supply.
+	software failures - 
+		bugs, memory leaks, deadlocks.
+	Network failures - 
+		Packet loss, Latency spikes, Partition, DNS failures.
+	Human failures - 
+		Configuration mistake, Failed deployment, Accidental deletions.
+		
+		
+		
+Redundancy is the foundation of availability -
+	Redundancy is the foundational technique behind almost every availability strategy. Having more than one of something means that any single failure leaves at least one working component still able to serve traffic.
+	1.) Active-Passive (Standby) - one component handles all the work while another waits idle as a backup. When the active component fails, the passive one takes over.
+		the standby can be configured in different states of readiness -> cold standby , warm standby and hot standby
+		1.) Cold standby - The backup server is not running, so failover requires booting the machine, starting services, and potentially restoring data. This might take 5-15 minutes
+		2.) warm standby - keeps the backup running and configured, but not actively processing requests. It might be receiving replicated data but is not in the load balancer pool.
+		3.) Hot standby - most expensive but fastest.The backup is fully synchronized and ready to serve immediately.
+	2.) Active-Active - all components handle traffic simultaneously. There is no distinction between primary and backup because every node is doing real work.
+	3.) Geographic Redundancy - what if the entire data center goes offline? Geographic redundancy distributes your system across multiple physical locations:
+		cloud providers offer different levels of geographic redundancy - 
+			Availability zones, Regions, Multi-cloud
+			1.) Availabity zones - seperate data centers in the same region, protects from single data center failure
+			2.) Regions - seperate areas like us-east and us-west , protects from regional disasters.
+			3.) Multi cloud - different cloud providers (gcp and aws)
+	4.) Redundancy across Layers -  True high availability requires redundancy at every layer of your stack.
+	
+	Redundancy is not free. Every backup server, every replica, every additional availability zone costs money. The question is whether that cost is justified by the reduction in downtime risk
+
+
+
+High Availability Patterns - 
+	Pattern 1: Load Balancer with Multiple Backends - 
+		The load balancer itself is a single point of failure. For true high availability, you need redundant load balancers
+	Pattern 2: Database Replication with Automatic Failover - 
+		Databases are stateful and cannot simply be load-balanced like web servers. Database high availability requires replication and careful failover management.
+		synchronus replication confirms the write after the replica acknowledges (zero data loss) and asynchronous confirms it immediately (possible data loss)
+	Pattern 3: Queue-Based Load Leveling - 
+		When downstream services cannot handle peak load, use a queue to buffer requests and process them at a sustainable rate. 
+		how it provides high availability - Decouples producers from consumers, Buffers traffic spikes that would overwhelm the database, Workers can fail and restart without losing messages, Can scale workers independently based on queue depth
+	Pattern 4: Circuit Breaker - 
+		When a dependency fails, continuing to call it wastes resources and can cause cascading failures. The circuit breaker pattern prevents this by failing fast.
+		A circuit breaker is a pattern used in distributed systems to prevent one failing service from bringing down everything else.
+		there are three states :
+			1.) closed - this is normal state. The circuit breaker watches the requests and keeps track of failures.If the configured threshold is exceeded, the circuit breaker opens.
+			2.) Open - This is the important part. When the circuit is OPEN, requests are not sent to the Payment Service at all. This saves the services.
+			3.) HALF-OPEN - Confusing part . After some time when the circuit thinks that the service is healthy again , it moves to half-open and allows some of the requests, if requests are success then move to closed othewise open.
+			
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Reliability - 
+	Reliability is the probability that a system will perform its intended function correctly over a given period of time, under specified conditions.
+	
+This definition has several important parts:
+	"Correctly" means producing the right output, not just any output.
+	"Over a given period" means reliability is measured over time, not at a single instant.
+	"Under specified conditions" means we define what normal operation looks like.
+	
+Measuring Reliability - 
+	1. Mean Time Between Failures (MTBF) - measures the average time between failures. A higher MTBF means failures are less frequent. MTBF = Total Operating Time / Number of Failures
+		if a system ran for 10,000 hours and experienced 5 failures, MTBF = 10,000 / 5 = 2,000 hours.
+	2. Mean Time To Recovery (MTTR) - 
+		MTTR measures how long it takes to restore the system after a failure. A lower MTTR means faster recovery.
+		MTTR = Total Downtime / Number of Failures
+		if 5 failures occurred and total repair time was 10 hours, MTTR = 10 / 5 = 2 hours per failure.
+	3. Error Rate
+		Percentage of requests that result in errors.
+		Error Rate = Failed Requests / Total Requests × 100%
+	4. Data Correctness
+		Percentage of responses that contain correct data.
+		Correctness = Correct Responses / Total Responses × 100%
+		
+Why Systems Become Unreliable - 
+	Hardware Failures
+		Physical components wear out and fail over time. Disks develop bad sectors, memory cells corrupt, CPUs overheat, and network cards malfunction.
+	Software Bugs 
+		every request that hits the buggy code path fails in the same way.The most dangerous bugs are those that do not crash the system but silently produce wrong results.
+	Configuration Errors
+		AWS's S3 outage in 2017 was triggered by a command to remove a small number of servers that accidentally removed a much larger set.
+	Human Error
+		
+	Overload and Cascading Failures
+		Systems that work perfectly under normal load can fail catastrophically when overloaded. 
+		
+Key Principles of Reliable Systems - 
+	Redundancy
+		having backup components ready to take over if one part fails.
+	Failover Mechanisms
+		a system automatically switches to a redundant or standby component when a failure is detected.
+	Load Balancing
+		prevents any single server from becoming a single point of failure.
+	Monitoring and Alerting
+	
+	Graceful Degradation
+		Even when parts of the system fail, a well-designed system can still provide core functionality rather than going completely offline. This concept is known as graceful degradation.
+		
+
+Techniques to Enhance Reliability - 
+	1. Redundant Architectures - if one fails, other continue operating.
+	2. Data Replication - ensure your data is not stored in a single location.
+	3. Graceful Degradation - When parts of the system fail, graceful degradation keeps the core functionality working.
+	4. Circuit Breakers - cutting off requests to prevent overload, allowing the system to recover.
+	5. Idempotency - Idempotent operations produce the same result regardless of how many times they are executed.
