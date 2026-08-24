@@ -151,3 +151,71 @@ Techniques to Enhance Reliability -
 	3. Graceful Degradation - When parts of the system fail, graceful degradation keeps the core functionality working.
 	4. Circuit Breakers - cutting off requests to prevent overload, allowing the system to recover.
 	5. Idempotency - Idempotent operations produce the same result regardless of how many times they are executed.
+	
+A reliable system doesn't just stay alive. It keeps doing the right thing even when parts of it start misbehaving.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Single Point Of Failure - 
+	A single point of failure is any component, dependency process, or decision point whose failure can take down the system. 
+	
+The component can be anything - server, load balancer, db, cloud region, DNS provider.
+
+What makes something a spof - whose failure cause a disrespect.
+
+
+
+How to identify SPOFs - 
+	- map the user flow and identify if this dependency fails, what happens to the flow?
+	- Trace the runtime and recovery dependencies - if one dependency fails while the service is up , you can't change it's credentials or redeploy. if the command which can restore the failed dependency is manual and untested and only run by one person only.
+	- if two components depend on each other to run then one failure can cause the other component to fail.
+	- do the things you assume will fail, fail them yourself and see if the system works well and can recover.
+
+
+
+Strategies to Reduce SPOFs - 
+	1. Redundancy - it means having other component take over when one fails.
+	2. Load Balancing and Health Checks - only if load balancer layer itself is redundant.
+	3. Data Replication and Backup - just duplicate the data across databases.
+	4. Geographic and Failure-Domain Isolation
+	5. Graceful Degradation - if recommendation is not working , at least show the trending items.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Latency vs Throughput vs Bandwidth - 
+	
+Latency - 
+	the time it takes for a single request from source to destination and back.
+	
+	Components of Latency - 
+		Propagation delay (time taken through the medium like optic fibres), Transmition delay (time to push bits onto the wire), Processing delay (time for routers, load balancers and servers to process), Queuing delay (time in buffers when components are busy).
+		
+	Latency is measured as - p50, p90, p99, p99.1 , it's the percentage and remaining %age users experience terrible performance.
+
+
+	What affects Latency - Geographical distance, Network congestion, Server load, Database queries, DNS resolution, TLs handshake.
+
+	Reducing Latency - Use CDNs, Caching, Connection pooling, Database optimization, Geographical distribution, Protocol optimization.
+	
+
+Throughput - 
+	Throughput is the amount of work completed per unit of time. Requests per second. 
+	
+	Bandwidth is maximum possible data transfer rate and throughput is actual data transfer achieved.
+	
+	Throughput is - workers /latency.
+	Throughput is reduced by - CPU bound tasks, large memory sets, I/O operations, Connection limit, Locks/shared resources
+	
+	Improving throughput - Horizontal scaling, Vertical scaling, Async processing, Batching, Caching, Connection pooling, Load balancing.
+	
+Bandwidth - 
+	maximum rate at which data can be transferred.
+	it's bits per second
+	Types of Bandwidth - 
+		Network bandwidth - Capacity of network links(1Gbps), 
+		Memory bandwidth - Rate of data transfer to/from RAM (DDR4 ~25GB/s)
+		Disk bandwidth - Read/write speed of storage (SSD: ~500 MB/s)
+		Bus bandwidth - Internal data transfer rate (PCIe 4.0 x16: ~32 GB/s, PCIe 5.0 x16: ~64 GB/s)
+	
+	Bandwidth-Delay Product (BDP) = Bandwidth × Latency - the amount of data that can be in flight.
+	if bandwidth - 100mbps and latency is 50ms then bdp - 500 * 0.05 = 625KB. that means - 625 KB of data can be in transit at once.
