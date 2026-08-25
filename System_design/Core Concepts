@@ -219,3 +219,26 @@ Bandwidth -
 	
 	Bandwidth-Delay Product (BDP) = Bandwidth × Latency - the amount of data that can be in flight.
 	if bandwidth - 100mbps and latency is 50ms then bdp - 500 * 0.05 = 625KB. that means - 625 KB of data can be in transit at once.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Consistent Hashing - 
+	Consistent hashing is a way of distributing data across multiple servers so that when a server is added or removed, only a small amount of data needs to move.
+	
+we do hashing to know which request should go to which server 
+node = hash(key) % number_of_nodes, That works while the node count stays fixed. It breaks badly when nodes are added or removed. it means a large cache miss, large data movements
+Consistenet hashing is used in stateful traffic.
+
+1. The Problem with Modulo Hashing
+	until the node list and node count does not change, it will work just fine, adding a node or removing a node will cause in sudden spike because the requests will start going to other servers which does not have it's data and then the servers will need the data migrations and also stateful workers will loose there locality
+	
+2. How Consistent Hashing Works 
+	it's a ring , server or key hash onto some point on ring. Each key belongs to the first server clockwise.
+	while adding a node - suppose a s5 comes between s1 and s2, only keys between s1 and s2 goes to s5 and all other will stay at there position.
+	and while removing a node - keys assigned to the server will be assigned to the next server in clockwise.
+	
+3. Virtual Nodes 
+	it means a physical node is placed at many positions on the ring virtually. to reduce load on one server.
+	
+4. Replication with Consistent Hashing
+	make the replica of key on different servers, it's like once you have pick the key then move clockwise and first server is your primary but don't stop, go until you meet next distinct physical node to make it's replica.
