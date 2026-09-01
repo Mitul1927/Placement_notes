@@ -242,3 +242,42 @@ Consistenet hashing is used in stateful traffic.
 	
 4. Replication with Consistent Hashing
 	make the replica of key on different servers, it's like once you have pick the key then move clockwise and first server is your primary but don't stop, go until you meet next distinct physical node to make it's replica.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CAP Theorem - 
+	When a distributed data system is partitioned, it cannot provide both strong consistency and full availability for the affected operations.
+	
+1. What CAP Really Means - 
+	Partition tolerance is not optional, The trade-off appears during partitions, The choice is often per operation, Availability in CAP is not uptime and Consistency in CAP is not ACID consistency.
+	
+2. The Three PropertiesThe Three Properties - 
+	Consistency - when new write appears , either show that write while read or show some error , don't show any stale data.
+	Availability - availability means every request sent to a non-failing node eventually receives a non-error response.
+	Partition Tolerance - Partition tolerance means the system has a defined behavior when nodes cannot communicate.
+	
+3. CP, AP, and CA - 
+	CP: Consistency + Partition Tolerance - refuse operations that cannot be completed safely
+	AP: Availability + Partition Tolerance - remains available during a partition by allowing reachable replicas to continue serving requests. just serve stale reads.
+	CA: Consistency + Availability - it's available when there is no partition 
+	
+PACELC - If there is a partition (P), choose between availability (A) and consistency (C) Else (E) choose between latency (L) and consistency (C). - Consistency still costs latency when there is no partition.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Failover Mechanism - 
+	Failover is the ability to switch automatically and seamlessly to a reliable backup system. just active-passive approach.
+	
+automatically switching from a failed primary system to a backup/standby system so the service keeps running with minimal downtime.
+
+Purpose: Improve availability, reliability, and fault tolerance.
+How it works: Primary server is monitored using a heartbeat. If the heartbeat stops, the backup takes over.
+Failover cluster: Multiple servers/nodes work together. If one fails, another handles its workload.
+
+Two configurations -
+	Active - Active , Active - Passive
+	
+Failover vs Failback:
+	Failover: Primary → Backup
+	Failback: Backup → Primary after the original system is recovered.
+	
