@@ -281,3 +281,30 @@ Failover vs Failback:
 	Failover: Primary → Backup
 	Failback: Backup → Primary after the original system is recovered.
 	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Fault Tolerance - 
+	a system's ability to continue working even when some part of it fails.
+	
+1. redundancy = better fault tolerance
+
+2. How to achieve Fault Tolerance - 
+	mulitple hardware systems - run same workload on different servers
+	multiple software systems - run multiple instances of a server.
+	
+	The idea is don't let one component become the single point of failure.
+
+3. Fault tolerance vs High Availability
+	FT - ability to continue operating when something fails
+	HA - Goal of keeping the system available for a very high percentage of time.
+	
+	A system still needs downtime for software upgrades, database migrations or maintenance so FT helps achieving HA, but doesn't guarantee it.
+	
+4. Normal Functioning vs Graceful Degradation
+	NF - Failure happens -> users don't notice. one server dies another server immediately handles the traffic.
+	GD - failure happens -> some functionality becoms slower/unavailable, but the entire application doesn't go down. e.g - recommendations doesn't work but main shopping functionality continues.
+	
+	NF is better but it costs more.
+
+5. Levels of FT - 
+	Node failure , AZ failure, Region failure, Cloud provider failure.
