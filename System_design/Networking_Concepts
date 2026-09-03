@@ -1,0 +1,101 @@
+OSI Model - 
+	It divides network communication into 7 layers, from physical signals to application protocols. Its main purpose is to give engineers a common way to understand and troubleshoot network problems.
+	
+| Layer | Name         | Main Job                                       | Examples                                    |
+| ----- | ------------ | ---------------------------------------------- | ------------------------------------------- |
+| **7** | Application  | Application-level communication                | HTTP, DNS, SMTP, SSH, gRPC                  |
+| **6** | Presentation | Data format, encoding, compression, encryption | JSON, Protobuf, UTF-8, TLS, gzip            |
+| **5** | Session      | Manage communication sessions                  | WebSocket, gRPC streams, session resumption |
+| **4** | Transport    | Process-to-process delivery                    | TCP, UDP, QUIC                              |
+| **3** | Network      | Routing between networks                       | IP, ICMP, BGP, OSPF                         |
+| **2** | Data Link    | Local network/frame delivery                   | Ethernet, WiFi, MAC, VLAN                   |
+| **1** | Physical     | Transfer raw bits/signals                      | Cables, fiber, radio                        |
+
+
+Layer 1 - Physical - Move raw bits through Ethernet cable, Fiber, wifi. Problems - bad cable, slow wifi.
+
+Layer 2 - Data Link - Handles communication on the local network , concepts - MAC addresses, Frames, Switches, data unit - frame.
+
+Layer 3 - Network - Move packets between different networks - concepts - ip addresses, routers, routing tables, ipv4/ipv6, icmp , data unit - packet.
+
+Layer 4 - Transport - provides process to process communication - concepts - ports, tcp, udp, flow control, congestion control. data units - tcp - segment , udp - datagram.
+
+Layer 5 - Session - Deals with starting, maintaining, resuming and closing sessions. concepts - Webhooks, Connection Pooling, TLS session resumption.
+
+Layer 6 - Presentation - Deals with how data is represented. includes - serialization, encoding, compression, Encryption.
+
+Layer 7 - Application - where actual application protocol operates - e.g - http/https, dns, ssh, smtp, gRPC
+
+Encapsulation -
+	when sending data, each layer adds it own information.
+	
+tcp/ip has four layers - Physical (1+2) , Internet (3), Transport (4), Application (5+6+7).
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IP Addresses - 
+	An IP address is a routing address that tells the network where a packet should go.
+	
+1. IPv4 - 
+	it uses 32 bits. e.g - 192.168.1.10. each part is a 8 bit octet 0-255. Total possible addresses - 2^32 ≈ 4.3 billion.
+
+2. CIDR & Subnets - 
+	Modern networks use CIDR instead of old Class A/B/C addressing. e.g - 192.168.1.0/24 (/24 means 24 bits network and 8 bits host so there are 2^8=256 addresses, first is the network and last is the broadcast address so 254 remaining.)
+	
+3. Public vs Private IP - 
+	public - can be routed over public internet. used for load balancers, cdn, vpn endpoints, NAT gateways.
+	private - Used inside internal networks. important private ranges - 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. These aren't routed over the public internet and can be reused by different private networks.
+	
+4 NAT (Network address translation) 
+	It translates private addresses into public addresses. NAT helped IPv4 survive despite address exhaustion. e.g - 192.168.1.10 -> public ip. But introduces complexity: Port forwarding, Connection tracking, NAT tables limit.
+	
+5. IPv6 - 
+	IPv6 uses 128-bit addresses. e.g - 2001:db8::/32
+	
+6. Special memory addresses - 
+	127.0.0.1 - localhost, 0.0.0.0 - all IPv4 interfaces when binding, 169.254.x.x -IPv4 link-local, 169.254.169.254 - common cloud metadata endpoint, 255.255.255.255 - IPv4 broadcast, 
+	127.0.0.1:8080 - means this service is accessible only from the same machine, 0.0.0.0:8080 - means the service listens on all IPv4 interfaces
+	
+7. How Routing Works - 
+	Routers maintain routing tables. They use longest prefix matching. e.g - 10.0.0.0/8, 10.0.1.0/24. Now for destination 10.0.1.25 both match but 24>8. So the /24 route wins because it is more specific. 
+	Hop by hop - Routers don't need to know the complete path. Each router decides only the next hop - client -> Router A -> Router B -> Router C -> Server.
+	
+8. TTL (Time To Live) - 
+	Each router decreases TTL by 1. This prevents packets from endlessly looping through routers. traceroute uses this mechanism to discover network hops.
+	TTL = 3 -> Router1 - 2 -> Router2 -1 -> Router3 - 0 Dropped.
+	
+9. BGP (Border Gateway Protocol) -
+	It's used for routing between large networks on the internet. BGP tells networks which IP ranges they can reach. like ISP, Cloud Provider, CDN.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+DNS (Domain Name System)
+	DNS translates human-readable domain names into IP addresses.
+
+1. DNS Resolution Flow - 
+	Browser cache -> OS Cache -> Recursive DNS resolver -> Root DNS Server -> TLD Server (.com) -> Authoritative Name server -> IP Address.
+	
+2. Important DNS Records - 
+	| Record    | Purpose                       |
+	| --------- | ----------------------------- |
+	| **A**     | Domain → IPv4 address         |
+	| **AAAA**  | Domain → IPv6 address         |
+	| **CNAME** | Alias → another domain        |
+	| **MX**    | Mail server                   |
+	| **TXT**   | Text/verification information |
+
+3. Recursive vs Authoritative DNS - 
+	Recursive - finds the answer for you. Client → Recursive Resolver. It may query Root → TLD → Authoritative and then return the answer.
+	Authoritative - Owns the official DNS records for a domain. example.com → IP
+
+4. DNS Caching - 
+	DNS uses caching at multiple levels - browser, operating system, Recursive resolver, Authoritative server
+	
+5. How DNS Achieves High Availability - 
+	DNS itself needs to be highly reliable because if DNS fails, users may not even know where your server is.
+	Anycast - The same DNS IP can be advertised from many locations. DNS IP -> India server or USA server.
+	Multiple authoritative servers - Domains normally have multiple authoritative name servers. if one fails second handles the traffic.
+	GeoDNS - DNS can return different IPs depending on where the user is located.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
