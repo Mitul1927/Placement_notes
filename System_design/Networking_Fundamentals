@@ -99,3 +99,42 @@ DNS (Domain Name System)
 	
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Proxy vs Reverse Proxy - 
+
+1. Proxy 
+	A proxy server acts on behalf of the client. The server sees the proxy's IP, rather than the client's IP and proxy forwards the request to client.
+	Main uses - Privacy, Access control, Security, Caching, Geographic routing.
+	The company can use the proxy to control what employees can access.
+	
+2. Reverse Proxy
+	A reverse proxy acts on behalf of the servers. client -> reverse proxy -> Backend servers.
+	The client communicates with the reverse proxy and doesn't directly access the backend servers.
+	
+forward proxy protects/hides clients.
+Reverse proxy protects/hides servers.
+
+3. Benefits of Reverse Proxy 
+	Load Balancing - Distributes requests across multiple backend servers.
+	SSL/TLS Termination - The reverse proxy can handle HTTPS encryption/decryption. client https -> reverse proxy -> (http/internal https) -> Backend. This removes some TLS processing from backend servers.
+	Caching - It can cache frequently requested static content
+	Security - A reverse proxy provides a controlled entry point and can: hide backend ips, filter requests.
+	
+4. Proxy vs Reverse Proxy 
+	|                  | Forward Proxy          | Reverse Proxy               |
+	| ---------------- | ---------------------- | --------------------------- |
+	| Represents       | **Client**             | **Server**                  |
+	| Sits in front of | Clients                | Servers                     |
+	| Hides            | Client IP              | Backend IP                  |
+	| Main purpose     | Client privacy/control | Server security/performance |
+	| Caching          | Yes                    | Yes                         |
+	| Load balancing   | Usually no             | **Yes**                     |
+	| SSL termination  | Possible               | **Common**                  |
+	| WAF              | Possible               | **Common**                  |
+
+
+Nginx is popular reverse proxy example.
+
+5. Proxy vs VPN 
+	proxy - usually handles specific application/network requests.
+	vpn - typically creates an encrypted tunnel for network traffic.
+	Proxy ≠ VPN
