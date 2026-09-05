@@ -138,3 +138,117 @@ Nginx is popular reverse proxy example.
 	proxy - usually handles specific application/network requests.
 	vpn - typically creates an encrypted tunnel for network traffic.
 	Proxy ≠ VPN
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+HTTP/HTTPS
+
+1. What is HTTP?
+	HTTP (Hypertext Transfer Protocol) is a request-response protocol used for communication between clients and servers.
+	it defines: 
+		Methods: GET, POST, PUT, PATCH, DELETE
+		status codes: 200, 400, 404, 500 etc.
+		Headers: Authorization, Content-type, Cache-Control
+		Body: JSON, HTML, images etc.
+
+2. HTTP Request
+	it contains method + url, headers, Body(optional)
+	e.g - Post /users content-type: application/json {name: "john"} response = status code, headers, body.
+	
+3. How an HTTP Request Works
+	flow -> DNS lookup -> open/reuse connection -> TLS handshake -> send http request -> server processes request -> http response -> connection may be reused.
+	in real systems, there may be : client -> cdn/waf -> load balancer -> reverse proxy / api gateway -> application server -> database.
+	
+4. HTTP is stateless
+	The server doesn't inherently remember Request 1 when handling Request 2.
+	
+5. HTTP Methods
+	| Method   | Purpose                    | Idempotent?    |
+	| -------- | -------------------------- | -------------- |
+	| `GET`    | Read data                  | Yes            |
+	| `POST`   | Create / execute operation | No by default  |
+	| `PUT`    | Replace/create resource    | Yes            |
+	| `PATCH`  | Partial update             | Not guaranteed |
+	| `DELETE` | Delete resource            | Yes            |
+	| `HEAD`   | Headers only               | Yes            |
+
+6. HTTP Status Codes
+	| Range | Meaning                 | Examples                          |
+	| ----- | ----------------------- | --------------------------------- |
+	| `1xx` | Informational           | `100`                             |
+	| `2xx` | Success                 | `200`, `201`, `204`               |
+	| `3xx` | Redirect                | `301`, `302`, `304`               |
+	| `4xx` | Client error            | `400`, `401`, `403`, `404`, `429` |
+	| `5xx` | Server/dependency error | `500`, `502`, `503`, `504`        |
+
+7. HTTP Caching
+	HTTP provides built-in caching mechanisms.
+
+8. HTTPS
+	it's HTTP + TLS
+	TLS provides:
+		1. Confidentiality - Others cannot easily read the traffic.
+		2. Integrity - Traffic cannot be silently modified.
+		3. Server authentication - The client can verify that the server is authorized for the hostname.
+	HTTPS normally uses port 443.
+	plain http use 80.
+
+9. HTTPS Does NOT Mean Everything Is Secure 
+	HTTPS does not:
+		Authenticate the user automatically
+		Fix vulnerable application code
+		Hide the destination IP
+		Protect a compromised client/server
+		Replace authorization
+		
+10. TLS Handshake 
+	client -> hello to server, server -> server hello + certificate to client -> client verify certificate -> Both establish shared keys -> Encrypted http.
+	TLS 1.3 commonly uses temporary key exchange such as ECDHE, providing forward secrecy.
+	TLS also uses ALPN to negotiate protocols such as HTTP/1.1 or HTTP/2.
+	
+11. HTTP Versions
+	| Version      | Transport     | Main feature                                  |
+	| ------------ | ------------- | --------------------------------------------- |
+	| **HTTP/1.1** | TCP           | Simple, widely supported                      |
+	| **HTTP/2**   | TCP           | Multiplexing + header compression             |
+	| **HTTP/3**   | QUIC over UDP | Better stream handling + connection migration |
+
+	HTTP/1.1 - A connection processes responses in order, which limits concurrency.
+	HTTP/2 - Multiple streams can share one TCP connection: Uses binary frames and HPACK header compression.
+	HTTP/3 - http/3 -> quic -> udp, quic provides - mulitple independent streams, tls 1.3, loss recovery.
+	
+12. Timeouts	
+	Every HTTP client should have timeouts.
+	 - DNS timeout -> Connection timeout -> TLS timeout -> Request/write timeout -> Response timeout -> Overall deadline
+	 Without timeouts, one slow dependency can consume: 
+	 	Threads
+	 	Connection pool slots
+	 	Memory
+	 	and eventually a large outage.
+	 	
+13. Retries
+	Retries are useful but dangerous.
+	request -> timeout -> retry
+	Use: Bounded retries, Exponential backoff, Jitter, Deadlines, Retry budgets, Idempotency where necessary
+	GET → Usually safe to retry POST → Can create duplicates
+	
+14. HTTP in Distributed Systems 
+	Client -> CDN -> WAF -> Load Balancer -> API Gateway -> Service -> Another Service
+	useful headers include -> Host, X-Forwarded-For, X-Forwarded-Proto, Authorization, X-Request-ID, traceparent
+	Only trust forwarding headers from infrastructure you control. Public clients can forge them.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TCP vs UDP
+
+1. Transport layer - 
+	Both TCP and UDP operate above IP. IP gets the packet to the right machine. TCP/UDP gets data to the correct program using ports.
+
+2. TCP (Transmission Control Protocol) -
+	connection oriented, Reliable, Ordered, A byte stream, not a message protocol.
+	client -> TCP handshake -> Connection -> Data
+	TCP provides - 3 way handshake, Reliable delivery, Ordered delivery, Retransmission, Duplicate detection, Flow control, Congestion control, Backpressure.
+	TCP 3 way handshake - client -> syn to server -> syn-ack to client -> ack to server. Connection established.
+
+3. TCP is a byte streams - 
+	if the application sends message a,b,c. TCP does not preserve those message boundaries. The reciever might recieve message a+b,c or a, b+c or even partial messages. Therefore, the application protocol must define message boundaries using things like:length prefixes, Delimiters, Structured formats.
