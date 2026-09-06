@@ -252,3 +252,111 @@ TCP vs UDP
 
 3. TCP is a byte streams - 
 	if the application sends message a,b,c. TCP does not preserve those message boundaries. The reciever might recieve message a+b,c or a, b+c or even partial messages. Therefore, the application protocol must define message boundaries using things like:length prefixes, Delimiters, Structured formats.
+	
+4. TCP Head of line Blocking - 
+	suppose 4 packets are going and packet 2 gets dropped or lost. then TCP again retransmit or look for packet 2 and deliver it and until then packet 3 and 4 will not be delievered.
+	TCP prefers complete, ordered data over stale or incomplete data.
+	
+5. Where TCP is used - 
+	http/1.1, http/2, https, ssh, postgresql.
+	
+6. UDP (User Data Protocol) - 
+	it's Connectionless, Lightweight.
+	Client -> UDP -> Server.
+	
+7. What UDP does not Provide - 
+	Retransmission, Ordering, Reliability, Flow Control, Congestion Control
+	A packet may arrive, arrive late, arrive twice, arrive out of order, never arrive.
+	
+8. UDP preserver message boundaries - 
+	if application sends - datagram a,b,c
+	udp treats them different datagrams.
+	
+9. Why use udp?
+	when Fresh data is more valuable than perfect delivery.
+	e.g - online game
+	
+10. Where UDP Is Used
+	e.g  - dns, online gaming, voice/video, QUIC. 
+	use case - Real-time + low latency + can tolerate some inconsistency.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Load Balancing Algorithms - 
+	Load balancing distributes incoming traffic across multiple servers so that one server doesn't become the unfortunate office employee doing everyone's work.
+	Main goals - Prevent server overload, improve response time, increase availability.
+	
+1. Round Robin - 
+	Requests are distributed sequentially.
+	it's very simple and even distribution of requests.
+	Doesn't consider current server load , doesn't consider server performance.
+	
+2. Weighted Round Robin - 
+	Each server gets a weight based on its capacity.
+	e.g - server 1 (weigth 5) , server 2 (weight 1), server 3 (weight 1), Server 1 receives roughly 5× as much traffic as Server 2 or 3.
+	it's best when servers has different cpu capacity, memory or processing power. But it still doesn't consider current load or response time.
+	
+3. Least Connections - 
+	Send the request to the server with the fewest active connections.
+	use when requests/connections have different lifetimes.
+	it adapts to current load and helps prevent overloaded servers.
+	It requires tracking active connections.
+	
+4. Least Response Time - 
+	Send traffic to the server currently responding fastest.
+	use when server performance varies.
+	it can reduce latency, adapts to changing server performance.
+	it requires accurate server response-time measurements.
+	
+5. IP Hash - 
+	Hash the client's IP address to determine the server.
+	use when you need session persistence/sticky sessions.
+	it's useful for stateful applications.
+	it can create uneven load, Server failures/additions can disrupt mappings (adding or removing a server), Many users behind the same NAT may appear under one public IP.
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Checksums - 
+	A checksum is a small value calculated from a larger piece of data.
+	Checksums are used in networking, storage, databases, backups, replication, and file transfers to see if data is unchanged when it was routing/being transferred.
+	
+original data -> calculate checksum -> checksum a.
+later -> recieved data -> calculate checksum -> checksum b.
+
+if a==b , data unchanged. if a!=b data changed.
+
+2. What can checksums detect?
+	They can help detect:
+		Bit flips, Corrupted network packets, Truncated data, Partial reads/writes, Bad disk sectors, Corrupted database pages, Replication/backup errors, Memory/DMA corruption
+		
+3. Checksum != security - 
+	A normal checksum can detect accidental corruption, but it doesn't protect against a malicious attacker.
+	
+4. Types of Integrity Checks - 
+	Parity - 
+		Bits -> Count 1s -> Even/Odd. Good for detecting simple single-bit errors, but too weak for most application-level integrity checks.
+	Additive checksum -
+		Adds Bytes/Words together, it's very fast and simple but it has weak error detection and some errors can cancel eath other out.
+	CRC (Cycle Redundancy Check) - 
+		e.g - CRC-32, CRD-32C
+		Designed to efficiently detect accidental corruption, especially: Bit errors, Burst errors, Transmission noise. CRC is not cryptographically secure.
+		
+5. Cryptographic Hash - 
+	e.g - sha-256, sha-384.
+	A cryptographic hash produces a fixed-size digest: Large File -> SHA-256 -> 256-bit digest.
+	A hash provides a strong content fingerprint, but by itself doesn't prove who created the data.
+	
+6. HMAC (Hash-based Message Authentication Code) - 
+	it combines data + Secret key which is hmac
+	Both sender and receiver know the same secret.
+	sender - data + secret -> hmac a.  Reciever - data + secret -> hmac b. then check if a==b.
+	This provides - integrity and authentication. It's useful for things like webhooks and API request signing.
+	limitation - Both sides have the secret, so both can create valid HMACs.
+	
+7. Digital Signatures - 
+	Digital signatures use public/private key cryptography.
+	sender - data + private key -> signature. receiver - data + public key -> valid/invalid. Only the private-key holder can create the signature, while anyone with the trusted public key can verify it.
+	
+8. Where are checksums used - 
+	Networking - Checksums exist at several networking layers. Ethernet (CRC), IPv4 (Header checksum).
+	Distributed systems - Checksums/hashes can help nodes compare large datasets efficiently. if has same - same data if not check the differences. Merkle trees.
