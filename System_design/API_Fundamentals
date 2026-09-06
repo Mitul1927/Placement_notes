@@ -1,0 +1,447 @@
+API (Application Programming Interface)
+	
+1. What is an API?
+	An API is an agreed interface through which two pieces of software communicate.
+	It defines:
+		What you can request
+		What data you need to send
+		What you get back
+		What errors can occur
+		How authentication works
+		What you're allowed to access
+		Limits such as rate limits and request size
+
+2. API as a Boundary
+	it creates a boundary between client and internal systems
+	This allows the backend to change internally without breaking clients.
+	Benefits
+		Hides implementation details
+		Provides controlled access
+		Makes systems easier to change
+		Allows multiple clients to reuse the same functionality
+		Creates clear ownership between services
+		Makes logging, monitoring and tracing easier
+		
+3. API Contract
+	The API contract is the agreement between client and server.
+	it should define - What can i do? what do i send? what do i receive? what errors can happend? and all that.
+	e.g - GET /v1/orders/ord_123 
+	the contract defines - 
+		Method       → GET
+		Path         → /v1/orders/ord_123
+		Headers      → Authorization, Accept
+		Response     → JSON
+		Errors       → 401, 404, 500...
+		
+4. Parts of an HTTP API Request
+	 it contains
+	 	| Part        | Purpose              | Example                          |
+		| ----------- | -------------------- | -------------------------------- |
+		| **Method**  | Action               | `GET`, `POST`, `PATCH`, `DELETE` |
+		| **Path**    | Resource/action      | `/users/123`                     |
+		| **Query**   | Filtering/pagination | `?limit=50`                      |
+		| **Headers** | Metadata/auth        | `Authorization`                  |
+		| **Body**    | Input data           | JSON                             |
+		
+	e.g - 
+		POST /users?sendEmail=true
+
+		Authorization: Bearer <token>
+		Content-Type: application/json
+
+		{
+		  "name": "John",
+		  "email": "john@example.com"
+		}
+5. HTTP API Response
+	A response contains Status code, Headers, Body
+	e.g - 
+		HTTP/1.1 201 Created
+
+		{
+		  "id": 123,
+		  "name": "John"
+		}
+	important status codes - 
+		200 → Success
+		201 → Resource created
+		400 → Bad request
+		401 → Not authenticated
+		403 → Not authorized
+		404 → Not found
+		429 → Rate limited
+		500 → Server error
+		
+6. Types of APIs
+	Public API
+		Used by external developers/customers.
+		needs - Documentation, Authentication , Authorization, rate limiting, stable contracts, monitoring, versioning.
+	Partner API
+		Used by selected external organizations.
+		needs - Tenant/partner access portal, Auditing, Data-sharing rules, Contract management.
+	Internal API
+		Used between services inside an organization.
+		e.g - checkout -> payment to inventory to fraud to notification.
+	Library API
+		Used inside the same application.
+		The caller uses the function without knowing its internal implementation.
+
+7. Common API Styles
+	| Style                   | Common use                                |
+	| ----------------------- | ----------------------------------------- |
+	| **REST**                | Public APIs, web/mobile backends          |
+	| **GraphQL**             | Flexible data queries                     |
+	| **gRPC**                | Internal service-to-service communication |
+	| **WebSocket**           | Real-time two-way communication           |
+	| **SSE**                 | Server → client streaming                 |
+	| **Webhooks**            | Event callbacks                           |
+	| **Message-driven APIs** | Background workflows                      |
+	| **SOAP**                | Legacy enterprise integrations            |
+	
+8. Authentication vs Authorization
+	Authentication -
+		who are you?
+		e.g - API key, OAuth access token, session cookie
+	Authorization - 
+		Are you allowed to do this?
+		e.g - user is Authenticated but is the user allowed to call request: GET /users/456/invoices
+
+9. Rate Limits & Quotas
+	Rate limiting protects the API from excessive traffic.
+	e.g - 100 requests/minute/user, if exceeded = 429 Too Many Requests
+	Quota is usually a broader usage allowance.
+	e.g - 10,000 requests/month for free user and 1,00,000 for paid plan
+	
+10. API Reliability
+	Production APIs need to handle failures properly.
+	Timeout - 
+		Every API call should have a timeout. Without timeouts, connections and threads can pile up.
+	Retry - 
+		Retries can recover from temporary failures. But GET is usually safe to retry , POST /payment -> Dangerousto blindly retry. Because the first request may have succeeded even though the client never received the response.
+		
+11. Idempotency
+	repeating the same operation should have the same intended effect as performing it once.
+	e.g - POST /payments Idempotency-Key: abc123. If client retries - Request 1 → abc123 → Payment created Request 2 → abc123 → Already processed. The server doesn't create a second payment.
+	Useful for payments, order creation, job submission.
+	
+12. API Observability
+	Production APIs should record enough information to debug failures.
+	useful information - 
+		Request ID / Trace ID
+		Caller / Tenant
+		HTTP method
+		Route
+		Status code
+		Latency
+		Request size
+		Response size
+		Rate-limit information
+		Downstream service latency
+		
+13. API Versioning
+	APIs evolve.
+	Instead of suddenly breaking existing clients: /v1/users, /v2/users.
+	you can introduce a new version while continuing to support the old one.
+	
+A good API isn't merely an endpoint that returns JSON. It's a stable, predictable contract that safely exposes a capability while allowing the system behind it to evolve.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+API Gateway - 
+	
+1. What is an API Gateway?
+	An API Gateway is a central entry point between clients and backend services.
+	Instead of clients directly communicating with multiple microservices:
+	Without API Gateway:
+		Mobile ──→ User Service
+		       ──→ Payment Service
+		       ──→ Order Service
+		       ──→ Inventory Service
+	With API Gateway:
+		                    ┌→ User Service
+		Client → API Gateway├→ Payment Service
+				    ├→ Order Service
+				    └→ Inventory Service
+				    
+2. Why Do We Need It?
+	Without a gateway:
+		Clients need to know where every service lives.
+		Authentication may need to be implemented repeatedly.
+		Rate limiting must be handled by individual services.
+		Security policies become harder to manage.
+		Backend service changes can affect clients.
+		
+3. Main Responsibilities
+	Authentication & Authorization
+		Gateway can verify:
+			JWT/OAuth tokens
+			API keys
+			Certificates
+		then check whether the client has permission to access a resource.
+	Rate Limiting
+		Controls how many requests a client can make.
+	Load Balancing
+		Gateway can distribute requests among multiple instances.
+	Caching
+		Gateway can cache frequently requested responses.
+	Request/Response Transformation
+		Gateway can modify requests or responses between clients and backend services.
+	Service Discovery
+		Microservice instances can dynamically scale
+	Circuit Breaking
+		If a backend service is repeatedly failing, The gateway can temporarily stop sending requests to that service.
+		e.g triggers - Timeouts, High latency, HTTP 500 errors, Service unavailable.
+	Logging & Monitoring
+		Gateway is a convenient place to collect: Request count, Response time, Status codes, Error rates, Request paths, User/client information.
+
+4. How a Request Flows
+	Client -> 1. Request received -> 2. Request validation -> 3. Authentication -> 4. Authorization -> 5. Rate limiting -> 6. Request transformation -> 7. Service discovery -> 8. Routing / load balancing -> Backend Service -> 9. Response -> 10. Transform / cache -> Client.
+	
+
+5. API Gateway vs Load Balancer 
+	| API Gateway            | Load Balancer                  |                     |
+	| ---------------------- | ------------------------------ | ------------------- |
+	| API-aware              | Primarily traffic distribution |                     |
+	| Authentication         | Usually not its primary role   |                     |
+	| Authorization          | Usually not its primary role   |                     |
+	| Rate limiting          | Common                         | Less central        |
+	| Request transformation | Common                         | Usually limited     |
+	| Service routing        | Yes                            | Yes                 |
+	| Load balancing         | Can do it                      | Core responsibility |
+	| Caching                | Often                          | Sometimes           |
+	| Circuit breaking       | Often                          | Sometimes           |
+
+	Load Balancer
+	→ "Which healthy server should receive this?"
+
+	API Gateway
+	→ "Should this request be allowed, modified, and where should it go?"
+	
+6. Typical Architecture
+	                    Internet
+                       			↓
+        		     Client
+                      			↓
+                	API Gateway
+                       		|
+       		┌───────────────┼───────────────┐
+		 ↓               	↓             	↓
+	User Service   Order Service   Payment Service
+		 ↓               	↓              	↓
+		DB              DB     Payment API
+		
+7. Important Problem: Gateway Becomes Critical Infrastructure
+	It can become a single point of failure so you should not deploy a single gateway instance.
+	use multiple instances.
+	
+The gateway itself needs High availability , Horizontal scaling, Health checks, failure handling.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+REST vs GraphQL
+
+1. REST (Representational State Transfer) - 
+	REST is an architectural style, not a protocol. It uses HTTP and organizes APIs around resources.
+	The server controls the response structure.
+	advantages - Simple and intuitive, stateless, Http caching works naturally, easy to scale with load balancers.
+	problems - over fetching (get more data than you need), under fetching (need multiple requests), Rigid response
+	
+2. GraphQL -
+	It is a query language and API runtime where the client specifies exactly what data it wants.
+	Usually there is a single endpoint, the client can request related data together, The server returns exactly those requested fields.
+	advantages - avoids over fetching, avoids under fetching, one request can retrieve related resources, Easy for different clients to request different data.
+	
+3. Three Core GraphQL Operations - 
+	Query -
+		used to read data, compared to GET in REST.
+	Mutation - 
+		Used to modify data, create, update, delete.
+	Subscription - 
+		Used for real time updates, server pushes data to client.
+		used for chat, Notifications, Live feeds, Stock updates.
+		
+4. REST vs GraphQL
+	|                | REST                              | GraphQL                             |
+	| -------------- | --------------------------------- | ----------------------------------- |
+	| API structure  | Multiple endpoints                | Usually one endpoint                |
+	| Data control   | Server decides                    | Client decides                      |
+	| Over-fetching  | Common                            | Reduced                             |
+	| Under-fetching | Common                            | Reduced                             |
+	| Schema         | Less strict                       | Strongly typed                      |
+	| Caching        | Easy with HTTP                    | More complicated                    |
+	| Versioning     | Often needed for breaking changes | Often less necessary                |
+	| Real-time      | Usually WebSockets/SSE            | Subscriptions                       |
+	| Complexity     | Lower                             | Higher                              |
+	| Security       | Relatively straightforward        | Query complexity must be controlled |
+
+5. GraphQL's Biggest Problem: Query Complexity 
+	The flexibility of GraphQL can become a problem.
+	client can request - 
+		User
+		 └── Posts
+		      └── Comments
+			   └── Authors
+				└── Posts
+				     └── Comments
+				          ...
+	A badly designed/deeply nested query can generate enormous database work.
+	Therefore it's systems often needs - Query depth limits, Query cost analysis, Rate limiting, Pagination, Timeouts, Caching.
+	
+6. GraphQL Caching Is Harder
+	REST works nicely with standard HTTP caching: GET /users/123 -> Cache
+	GraphQL commonly sends queries through a shared endpoint: POST /graphql, But different queries can request completely different data: A -> name + email, B -> name + posts, C -> post + comments.
+	Therefore, traditional URL-based HTTP caching becomes more difficult.
+	
+7. When to Use REST
+	when API is relatively simple, resources map naturally to endpoints, HTTP caching is important.
+
+8. When to use GraphQL
+	Different clients need different fields, data is deeply nested, you want to reduce multiple client requests.
+
+9. You Can Use Both 
+	A system can use both.
+	A common approach is 
+		GraphQL -> flexible client facing applications.
+		REST -> ADMIN APIs, third-party integrations, simple/internal APIs.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+WebSockets
+
+1. What are WebSockets?
+	persistent, full-duplex communication between client and server over a single TCP connection.
+	unline normal http:
+		HTTP
+		Client ── Request ──> Server
+		Client <── Response ── Server
+			connection/request based
+
+		WebSocket
+		Client <══════════════════> Server
+		       persistent connection
+		       both can send anytime
+	Once connected, either side can send messages independently.
+	
+2. How WebSockets Work
+	The connection starts as a normal HTTP request and then gets upgraded.
+	client -> http GET Upgrade:WebSocket to server -> HTTP 101 Switching protocols to Websocket connection and then client to server, server to client.
+	steps
+		1. Handshake
+			Client sends HTTP GET with Upgrade: websocket.
+			Server responds with HTTP 101 Switching Protocols.
+		2. Connection
+			Persistent TCP connection is established.
+		3. Data transfer
+			Both client and server can send messages at any time.
+			Data is transferred using WebSocket frames.
+		4. Closure
+			Either side can close the connection using a close frame.
+			
+3. Why Use WebSockets?
+	| Benefit            | Meaning                                      |
+	| ------------------ | -------------------------------------------- |
+	| **Real-time**      | Server can immediately push updates          |
+	| **Low latency**    | No new request needed for every update       |
+	| **Bidirectional**  | Client and server can both initiate messages |
+	| **Persistent**     | Connection stays open                        |
+	| **Lower overhead** | Small frames after initial handshake         |
+	| **Efficient**      | Avoids constant polling requests             |
+
+4. WebSocket vs Polling
+	Polling - client repeatedly asks, problem - lots of useless requests.
+	Long Polling - Better than polling, but the HTTP request still has to be recreated. it wait before sending response to client.
+	WebSocket - client to server persistent connection. No repeated http requests are required.
+	
+5. Where Are WebSockets Used?
+	Chat, Live Notifications, Mulitplayer games, Financial markets, Live streaming.
+	
+6. Important Challenges 
+	1. Scalability
+		A WebSocket connection stays open. If you have  1 million users and 1 million connections then you should have multiple websocket servers and you need load balancing and distributed websocket infrastructure.
+	2. Reconnection 
+		Network connections can disappear. 
+		Connected -> Network failure -> Disconnected -> Reconnect -> Connected.
+		Applications should implement reconnection strategies.
+	3. Heartbeats
+		Use periodic ping/pong messages to detect dead connections. If the server stops responding, the client knows the connection is probably dead.
+	4. Proxy / Firewall issues
+		Some proxies and firewalls may not support or may block WebSocket connections. A fallback such as long polling can be useful.
+	5. Security 
+		Authenticate users, Authorize actions, Validate incoming messages, protect against Cross-site Websocket Hijacking, apply rate limits/connection limits. consider DDos protection.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+WebHooks
+
+1. What is a Webhook?
+	Webhook = an HTTP request sent by one system to another when an event occurs.
+	It is a push-based communication pattern.
+		Without Webhook: Polling
+		Your App ── "Anything changed?" ──> Provider
+		Your App ── "Anything changed?" ──> Provider
+		Your App ── "Anything changed?" ──> Provider
+
+
+		With Webhook:
+		Provider ── Event happened! ──> Your App
+	Instead of continuously asking a provider for updates, the provider calls your endpoint when something happens.
+	e.g - stripe -> payment succeded, Github -> pull request opened
+	
+2. How Webhooks Work
+	basic flow = Register endpoint -> Event occurs -> Provider sends POST -> Verify webhook -> save/queue event -> Return 2xx -> Process asynchronously.
+	The important idea is acknowledge quickly and do heavy work asynchronously.
+	
+3. Webhook Request
+	Headers -
+		| Header       | Purpose                      |
+		| ------------ | ---------------------------- |
+		| Content-Type | Usually `application/json`   |
+		| Event type   | What happened                |
+		| Delivery ID  | Identifies delivery/event    |
+		| Signature    | Verifies sender              |
+		| Timestamp    | Helps prevent replay attacks |
+		| User-Agent   | Identifies provider          |
+	Body - 
+		Contains - Event envelope + Resource data
+		e.g - {
+			  "event": "payment_succeeded",
+			  "id": "evt_123",
+			  "data": {
+			    "payment_id": "pay_456",
+			    "amount": 1000
+			  }
+			}
+			
+4. Webhook Receiver
+	A production receiver should: Request -> Verify signature -> Validate event -> Check duplicate -> Persist/enqueue -> Return 2xx -> Process Asynchronously
+	Important - dont do everything in one request , make queues so that you can response fast so that the provider shouldn't wait and retry.
+	
+5. At-Least-Once Delivery
+	This is one of the most important webhook concepts.
+	Meaning = Event -> Provider sends -> Your server processes it -> Response gets lost -> Provider things delivery failed -> Provider sends again. So your application must handle duplicates.
+	Solution: Idempotency / Deduplication , Store a unique event or delivery ID. Use a unique database constraint where possible.
+	At least once deliver + Idempotency = safe webhook processing.
+	
+6. Don't Trust Event Ordering
+	Webhooks can arrive out of order. Retries and network delays can cause this.
+	Solutions
+		Don't blindly depend on event order.
+		Fetch the latest resource state from the provider when necessary.
+		Use resource versions/timestamps.
+		Reject invalid state transitions.
+		Periodically reconcile your state with the provider.
+		
+7. Webhook Security
+	1. Signature Verification
+		provider: HMAC(request_body,shared_secret)
+		your server calculates the same signature. Provider signature = your calculated signature -> valid.
+	2. Replay Protection
+		An attacker could capture a valid webhook and send it again.
+		Protection - Timestamp validation, Event/deliver ID deduplication, Store processed events, Idempotent operations
+	3. IP Allow Lists
+		IP allow-listing should not replace signature verification.
+	4. Don't Leak Secrets
+		Never log secrets, Tokens, Authorization headers.
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
